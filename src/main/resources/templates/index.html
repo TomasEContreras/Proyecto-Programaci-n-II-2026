@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <h1>¡Bienvenido a JTEducation!</h1>
+        <p class="subtitulo">Sistema de gestión académica para escuelas secundarias</p>
+
+        <h2>Últimos alumnos inscriptos</h2>
+
+        <p th:if="${#lists.isEmpty(alumnos)}" class="vacio">Todavía no hay alumnos cargados.</p>
+
+        <div class="alumnos-grid">
+            <a th:each="alumno : ${alumnos}" th:href="@{/alumnos/{id}(id=${alumno.idAlumno})}" class="alumno-card">
+                <div class="avatar" th:text="${#strings.substring(alumno.nombre, 0, 1) + #strings.substring(alumno.apellido, 0, 1)}">AB</div>
+                <h3 th:text="${alumno.apellido + ', ' + alumno.nombre}">Apellido, Nombre</h3>
+                <p th:text="${alumno.curso.anio + '° ' + alumno.curso.division}">4° A</p>
+                <small th:text="'DNI ' + ${alumno.dni}">DNI 00000000</small>
+            </a>
+        </div>
+
+        <div class="ver-mas">
+            <a th:href="@{/alumnos}">Ver todos los alumnos...</a>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
 </html>

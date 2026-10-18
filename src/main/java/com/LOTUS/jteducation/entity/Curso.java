@@ -1,4 +1,3 @@
-
 package com.LOTUS.jteducation.entity;
 
 import jakarta.persistence.Entity;
@@ -7,47 +6,51 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Curso {
 
-    @Id // Marca un atributo como la clave primaria de la tabla. (idCurso)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Indica que la base de datos asigna un nuevo valor de forma autoincremental.
-    private Long idCurso; // El tipo de dato Long se usa para las claves primarias numericas
+    public static final int ANIO_MIN = 1;
+    public static final int ANIO_MAX = 6; // Ajustalo si la escuela tiene otra cantidad de años
+    public static final int CICLO_MIN = 2000;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idCurso;
     private int anio;
-    @Enumerated(EnumType.STRING) // STRING guarda el nombre del rol; el valor por defecto (ORDINAL) guardaría un número
+    @Enumerated(EnumType.STRING)
     private Division division;
     private int cicloLectivo;
-    
-    // SETTERS
-    
+
+    public Curso(int anio, Division division, int cicloLectivo) {
+        setAnio(anio);
+        setDivision(division);
+        setCicloLectivo(cicloLectivo);
+    }
+
     public void setAnio(int anio) {
-        if (anio <= 0 && anio > 5) { 
-            throw new IllegalArgumentException("El anio ingresado no es el correcto");
+        // Antes: (anio <= 0 && anio > 5) -> nunca era verdadero, no validaba nada. Es un OR.
+        if (anio < ANIO_MIN || anio > ANIO_MAX) {
+            throw new IllegalArgumentException("El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX + ".");
         }
         this.anio = anio;
     }
 
     public void setDivision(Division division) {
         if (division == null) {
-            throw new IllegalArgumentException("Debe existir una division");
+            throw new IllegalArgumentException("Debe existir una división.");
         }
         this.division = division;
     }
 
     public void setCicloLectivo(int cicloLectivo) {
-        if (cicloLectivo < 0) {
-            throw new IllegalArgumentException("El ciclo lectivo ingresado no es el correcto");
+        if (cicloLectivo < CICLO_MIN) {
+            throw new IllegalArgumentException("El ciclo lectivo ingresado no es correcto.");
         }
         this.cicloLectivo = cicloLectivo;
     }
-    
-    
 }

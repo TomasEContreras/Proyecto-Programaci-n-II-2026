@@ -1,32 +1,33 @@
-
 package com.LOTUS.jteducation.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Materia {
 
-    @Id // Marca un atributo como la clave primaria de la tabla. (idMateria)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Indica que la base de datos asigna un nuevo valor de forma autoincremental.
-    private Long idMateria; // El tipo de dato Long se usa para las claves primarias numericas
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idMateria;
     private String nombre;
-    
-    // SETTERS
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) { 
-            throw new IllegalArgumentException("El nombre del alumno no puede estar vacio");
-        }
-        this.nombre = nombre;
+
+    public Materia(String nombre) {
+        setNombre(nombre);
     }
-    
+
+    public void setNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la materia no puede estar vacío."); // decía "del alumno"
+        }
+        if (nombre.trim().length() > 45) { // El VARCHAR de la tabla es de 45
+            throw new IllegalArgumentException("El nombre de la materia no puede superar los 45 caracteres.");
+        }
+        this.nombre = nombre.trim();
+    }
 }

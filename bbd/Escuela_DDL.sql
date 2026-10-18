@@ -14,7 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema jt_education_db_red
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `jt_education_db_red` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `jt_education_db_red` DEFAULT CHARACTER SET utf8mb4 ;
 USE `jt_education_db_red` ;
 
 -- -----------------------------------------------------
@@ -22,12 +22,12 @@ USE `jt_education_db_red` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`curso` (
   `id_curso` INT NOT NULL AUTO_INCREMENT,
-  `anio` INT(11) NOT NULL,
+  `anio` INT NOT NULL,
   `division` ENUM('A', 'B', 'C') NOT NULL,
-  `ciclo_lectivo` INT(11) NOT NULL,
+  `ciclo_lectivo` INT NOT NULL,
   PRIMARY KEY (`id_curso`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`domicilio` (
   `id_domicilio` INT NOT NULL AUTO_INCREMENT,
   `ciudad` VARCHAR(45) NOT NULL,
   `calle` VARCHAR(45) NOT NULL,
-  `altura` INT(11) NOT NULL,
+  `altura` INT NOT NULL,
   PRIMARY KEY (`id_domicilio`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -50,11 +50,11 @@ CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`usuario` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(100) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
-  `rol` ENUM('STD', 'ADMIN') NOT NULL,
+  `rol` ENUM('ALUMNO', 'ADMIN') NOT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`alumno` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`materia` (
   `nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_materia`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -111,9 +111,9 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`alumno_materia` (
   `id_al_mat` INT NOT NULL AUTO_INCREMENT,
-  `primer_nota` DECIMAL(4,2) NOT NULL,
-  `segunda_nota` DECIMAL(4,2) NOT NULL,
-  `nota_final` DECIMAL(4,2) NOT NULL,
+  `primer_nota` DECIMAL(4,2) NULL,
+  `segunda_nota` DECIMAL(4,2) NULL,
+  `nota_final` DECIMAL(4,2) NULL,
   `alumno_id_alumno` INT NOT NULL,
   `materia_id_materia` INT NOT NULL,
   PRIMARY KEY (`id_al_mat`),
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`alumno_materia` (
       AND `segunda_nota` BETWEEN 1 AND 10
       AND `nota_final` BETWEEN 1 AND 10))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

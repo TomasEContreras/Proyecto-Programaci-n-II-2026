@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumnos - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <h1>Alumnos</h1>
+        <p class="subtitulo">
+            <span th:text="${paginaAlumnos.totalElements}">0</span> alumnos registrados
+        </p>
+
+        <p th:if="${paginaAlumnos.totalElements == 0}" class="vacio">Todavía no hay alumnos cargados.</p>
+
+        <!-- tabla-wrapper: en pantallas chicas la tabla se desliza horizontalmente en vez de romper el diseño -->
+        <div class="tabla-wrapper" th:if="${paginaAlumnos.totalElements > 0}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Apellido y nombre</th>
+                        <th>DNI</th>
+                        <th>Curso</th>
+                        <th>Inscripción</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="alumno : ${paginaAlumnos.content}">
+                        <td th:text="${alumno.apellido + ', ' + alumno.nombre}">Pérez, Ana</td>
+                        <td th:text="${alumno.dni}">00000000</td>
+                        <td th:text="${alumno.curso.anio + '° ' + alumno.curso.division}">4° A</td>
+                        <td th:text="${#temporals.format(alumno.fechaInscripcion, 'dd/MM/yyyy')}">01/03/2026</td>
+                        <td><a class="btn" th:href="@{/alumnos/{id}(id=${alumno.idAlumno})}">Ver</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación (misma lógica del apunte: Anterior / números / Siguiente) -->
+        <div th:if="${paginaAlumnos.totalPages > 1}" class="pagination-container">
+            <ul>
+                <li th:class="${paginaAlumnos.first} ? 'disabled' : ''">
+                    <a th:href="@{/alumnos(page=${paginaAlumnos.number - 1}, size=${paginaAlumnos.size})}">Anterior</a>
+                </li>
+
+                <li th:each="i : ${#numbers.sequence(0, paginaAlumnos.totalPages - 1)}"
+                    th:class="${i == paginaAlumnos.number} ? 'active' : ''">
+                    <a th:href="@{/alumnos(page=${i}, size=${paginaAlumnos.size})}" th:text="${i + 1}">1</a>
+                </li>
+
+                <li th:class="${paginaAlumnos.last} ? 'disabled' : ''">
+                    <a th:href="@{/alumnos(page=${paginaAlumnos.number + 1}, size=${paginaAlumnos.size})}">Siguiente</a>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

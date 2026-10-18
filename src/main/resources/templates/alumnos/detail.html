@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del alumno - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <a class="volver" th:href="@{/alumnos}">&larr; Volver al listado</a>
+
+        <h1 th:text="${alumno.apellido + ', ' + alumno.nombre}">Apellido, Nombre</h1>
+        <p class="subtitulo" th:text="${alumno.curso.anio + '° ' + alumno.curso.division + ' - Ciclo lectivo ' + alumno.curso.cicloLectivo}">4° A</p>
+
+        <section class="ficha">
+            <div><strong>DNI</strong><span th:text="${alumno.dni}">00000000</span></div>
+            <div><strong>Fecha de nacimiento</strong><span th:text="${#temporals.format(alumno.fechaNacimiento, 'dd/MM/yyyy')}">01/01/2010</span></div>
+            <div><strong>Fecha de inscripción</strong><span th:text="${#temporals.format(alumno.fechaInscripcion, 'dd/MM/yyyy')}">01/03/2026</span></div>
+            <div><strong>Domicilio</strong><span th:text="${alumno.domicilio.calle + ' ' + alumno.domicilio.altura + ', ' + alumno.domicilio.ciudad}">Calle 123, Ciudad</span></div>
+            <div><strong>Email</strong><span th:text="${alumno.usuario.email}">alumno@mail.com</span></div>
+        </section>
+
+        <h2>Materias y notas</h2>
+        <p th:if="${#lists.isEmpty(notas)}" class="vacio">El alumno todavía no tiene materias asignadas.</p>
+
+        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(notas)}">
+            <table>
+                <thead>
+                    <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="n : ${notas}">
+                        <td th:text="${n.materia.nombre}">Matemática</td>
+                        <td th:text="${n.primerNota} ?: '-'">-</td>
+                        <td th:text="${n.segundaNota} ?: '-'">-</td>
+                        <td th:text="${n.notaFinal} ?: '-'">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

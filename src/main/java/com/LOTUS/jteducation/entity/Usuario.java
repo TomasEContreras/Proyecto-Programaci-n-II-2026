@@ -1,47 +1,75 @@
-
 package com.LOTUS.jteducation.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "usuario")
 @Getter
-
-@AllArgsConstructor
 @NoArgsConstructor
 public class Usuario {
-    
-    @Id // Marca un atributo como la clave primaria de la tabla. (id_alumnno)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Indica que la base de datos asigna un nuevo valor de forma autoincremental.
-    private Long idUsuario;
+
+    // Las constantes static NO son columnas: JPA las ignora. Van fuera del camino de @Id.
+    public static final int LONG_MIN_PASS = 8;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario") // El campo se llama "id", la columna "id_usuario"
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
-    @Enumerated(EnumType.STRING) // STRING guarda el nombre del rol; el valor por defecto (ORDINAL) guardaría un número
+
+    @Enumerated(EnumType.STRING) // Guarda "ADMIN"/"ALUMNO" y no un número
+    @Column(nullable = false)
     private Rol rol;
-    
-    public void setEmail(String email) {
-        if (email == null || email.trim().isEmpty()) { 
-            throw new IllegalArgumentException("El email no puede estar vacio");
+
+    public Usuario(String email, String passwordHash, Rol rol) {
+        setEmail(email);
+        setPasswordHash(passwordHash);
+        setRol(rol);
+    }
+
+    // Esta regla se aplica sobre la contraseña EN TEXTO PLANO, ANTES de hashearla
+    // (el hash siempre mide lo mismo, no tiene sentido validar su largo).
+    public static void validarPasswordPlana(String passwordPlana) {
+        if (passwordPlana == null || passwordPlana.trim().isEmpty()) {
+            throw new IllegalArgumentException("La contraseña no puede estar vacía.");
         }
-        this.email = email;
+        if (passwordPlana.length() < LONG_MIN_PASS) {
+            throw new IllegalArgumentException("La contraseña debe tener mínimo " + LONG_MIN_PASS + " caracteres.");
+        }
+    }
+
+    public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty() || !email.contains("@")) {
+            throw new IllegalArgumentException("El email ingresado no es válido.");
+        }
+        this.email = email.trim();
     }
 
     public void setPasswordHash(String passwordHash) {
-        if (passwordHash == null || passwordHash.trim().isEmpty()) { 
-            throw new IllegalArgumentException("El usuario debe contener una contraseña");
+        if (passwordHash == null || passwordHash.trim().isEmpty()) {
+            throw new IllegalArgumentException("El hash de la contraseña no puede estar vacío.");
         }
         this.passwordHash = passwordHash;
     }
 
     public void setRol(Rol rol) {
+        if (rol == null) { // Antes la condición estaba invertida: rechazaba los roles válidos
+            throw new IllegalArgumentException("El usuario debe tener un rol.");
+        }
         this.rol = rol;
     }
-    
 }
