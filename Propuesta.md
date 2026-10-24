@@ -1,39 +1,30 @@
 # Propuesta de Proyecto
 
-## Sistema de Gestión Académica para Escuelas Secundarias
+## JTEducation: Sistema de gestión académica para una escuela secundaria
 
 ### Descripción
 
-La propuesta consiste en desarrollar un sistema destinado a la gestión de la información académica y administrativa de una escuela secundaria.
+JTEducation es una aplicación web para administrar la información académica básica de una escuela secundaria: los alumnos, los cursos en los que se inscriben, las materias que cursan y las notas que obtienen.
 
-El sistema busca facilitar la organización de la información relacionada con los alumnos, docentes, cursos, divisiones y materias, además de permitir llevar un registro de las calificaciones y la asistencia de los estudiantes.
-
-La idea surge a partir de la necesidad de contar con un lugar centralizado donde se pueda consultar y administrar la información de los alumnos y su trayectoria dentro de la institución, evitando tener que manejar estos datos de manera separada.
-
-El sistema estará pensado para representar el funcionamiento de una escuela secundaria, teniendo en cuenta su organización por años y divisiones. Por ejemplo, un alumno puede pertenecer a 4° A, cursar diferentes materias y tener distintos docentes dependiendo de cada una de ellas.
-
-### Funcionamiento
-
-El sistema permitirá registrar alumnos y asociarlos a un determinado curso y división. También se podrán registrar los docentes y las materias que forman parte de la institución.
-
-A partir de esto, será posible relacionar los diferentes elementos. Un docente podrá estar a cargo de una materia en un determinado curso, mientras que los alumnos estarán asociados a las divisiones correspondientes.
-
-También se podrá llevar un registro de las calificaciones de cada alumno en las diferentes materias y de su asistencia a clases. De esta manera, al consultar un alumno, se podrá obtener información como su curso, las materias que cursa, sus calificaciones y su historial de asistencia.
-
-Entre las principales operaciones que tendrá el sistema se encuentran:
-
-- Registrar, modificar, eliminar y consultar alumnos.
-- Registrar y administrar docentes.
-- Registrar y administrar materias.
-- Crear y administrar cursos y divisiones.
-- Asociar docentes con materias y cursos.
-- Asignar alumnos a sus respectivos cursos y divisiones.
-- Registrar y consultar calificaciones.
-- Registrar y consultar asistencia.
-- Consultar información académica de los alumnos.
+La idea es contar con un lugar centralizado donde el personal de la escuela pueda registrar y consultar esos datos, y donde cada alumno pueda ver su propia información, en lugar de manejarlos en planillas separadas.
 
 ### Alcance
 
-El proyecto estará enfocado primeramente en el ámbito de las escuelas secundarias.
+El proyecto representa de forma simple pero realista la organización de una escuela secundaria por año y división (por ejemplo, 4° A).
 
-El objetivo final es obtener un sistema que represente de forma sencilla pero realista la gestión académica de una escuela secundaria en la cual los padres puedan ver los resultados de sus hijos, los profesores administrar sus cursos y la administración controlar las distintas divisiones y años de la institución.
+**Incluye:**
+
+- Gestión de alumnos, con su domicilio y su cuenta de acceso.
+- Gestión de materias.
+- Cursos organizados por año, división y ciclo lectivo.
+- Registro y consulta de las notas de cada alumno en cada materia.
+- Inicio de sesión con dos tipos de usuario, con permisos distintos.
+
+**No incluye** (podrían ser ampliaciones futuras): docentes, registro de asistencia y acceso para padres o tutores.
+
+### Usuarios y permisos
+
+| Rol | Qué puede hacer |
+|---|---|
+| **Administrador** | Gestionar alumnos y materias (alta, modificación, baja y consulta) y cargar notas. |
+| **Usuario final (alumno)** | Iniciar sesión y consultar su propia ficha: curso, materias y notas. |

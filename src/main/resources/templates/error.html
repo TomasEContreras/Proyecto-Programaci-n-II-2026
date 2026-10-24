@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <!-- Esta misma plantilla la usan nuestros @ExceptionHandler y también Spring Boot para los errores
+         que no controlamos (por ejemplo, una URL que no existe). -->
+    <main class="container">
+
+        <!-- Error 404: la señora diciendo el mensaje -->
+        <div th:if="${status == 404}">
+            <div class="error-404">
+                <img class="error-404-img" th:src="@{/images/error-404-senora.png}"
+                     alt="Señora con gafas rojas levantando un dedo en señal de advertencia">
+                <p class="error-404-texto">
+                    <span>Error 404.</span>
+                    <span th:text="${mensaje} ?: 'Esa página no existe. Volvé al inicio e intentalo de nuevo.'">Esa página no existe.</span>
+                </p>
+            </div>
+            <div class="error-404-volver">
+                <a class="btn" th:href="@{/}">Volver al inicio</a>
+            </div>
+        </div>
+
+        <!-- Cualquier otro error: caja simple -->
+        <div class="error-box" th:unless="${status == 404}">
+            <p class="error-codigo" th:text="${status}">500</p>
+            <h1 th:text="${titulo} ?: 'Ocurrió un error'">Error</h1>
+            <p class="subtitulo" th:text="${mensaje} ?: 'No pudimos completar lo que pediste. Volvé a intentarlo más tarde.'">Mensaje</p>
+            <a class="btn" th:href="@{/}">Volver al inicio</a>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 package com.LOTUS.jteducation.controller;
 
 import com.LOTUS.jteducation.dto.MateriaForm;
@@ -44,22 +43,23 @@ public class MateriaController {
         return VISTA_FORM;
     }
 
-    // POST + redirect: evita reenviar el formulario al refrescar
+    // POST + redirect: evita reenviar el formulario al refrescar.
+    // Una única salida: "vista" arranca en el formulario y solo cambia si todo salió bien.
     @PostMapping
     public String crear(@Valid @ModelAttribute("materiaForm") MateriaForm form,
             BindingResult resultado, RedirectAttributes redirect) {
-        if (resultado.hasErrors()) {
-            return VISTA_FORM;
+        String vista = VISTA_FORM;
+        if (!resultado.hasErrors()) {
+            try {
+                materiaService.crear(form.getNombre());
+                redirect.addFlashAttribute(MSJ_EXITO, "Materia creada correctamente.");
+                vista = REDIRECT_LISTA;
+            } catch (ReglaDeNegocioException e) {
+                // Error de negocio (nombre repetido): se muestra junto al campo
+                resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
+            }
         }
-        try {
-            materiaService.crear(form.getNombre());
-        } catch (ReglaDeNegocioException e) {
-            // Error de negocio (nombre repetido): se muestra junto al campo
-            resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
-            return VISTA_FORM;
-        }
-        redirect.addFlashAttribute(MSJ_EXITO, "Materia creada correctamente.");
-        return REDIRECT_LISTA;
+        return vista;
     }
 
     // GET /materias/5/editar -> formulario con los datos cargados
@@ -77,17 +77,17 @@ public class MateriaController {
             BindingResult resultado, Model model, RedirectAttributes redirect) {
         // El id se agrega siempre: si hay que volver al formulario, la vista sabe que es edición
         model.addAttribute("idMateria", id);
-        if (resultado.hasErrors()) {
-            return VISTA_FORM;
+        String vista = VISTA_FORM;
+        if (!resultado.hasErrors()) {
+            try {
+                materiaService.actualizar(id, form.getNombre());
+                redirect.addFlashAttribute(MSJ_EXITO, "Materia actualizada correctamente.");
+                vista = REDIRECT_LISTA;
+            } catch (ReglaDeNegocioException e) {
+                resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
+            }
         }
-        try {
-            materiaService.actualizar(id, form.getNombre());
-        } catch (ReglaDeNegocioException e) {
-            resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
-            return VISTA_FORM;
-        }
-        redirect.addFlashAttribute(MSJ_EXITO, "Materia actualizada correctamente.");
-        return REDIRECT_LISTA;
+        return vista;
     }
 
     // Modificar datos solo por POST, nunca por GET
