@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <h1>Cursos</h1>
+        <p class="subtitulo">
+            <span th:text="${#lists.size(cursos)}">0</span>
+            <span th:text="${#lists.size(cursos) == 1} ? 'curso registrado' : 'cursos registrados'">cursos registrados</span>
+        </p>
+
+        <!-- Mensajes flash: llegan desde el controlador y se muestran una sola vez -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
+        <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+
+        <a class="btn" th:href="@{/cursos/nuevo}">Nuevo curso</a>
+
+        <p th:if="${#lists.isEmpty(cursos)}" class="vacio">Todavía no hay cursos cargados.</p>
+
+        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(cursos)}">
+            <table>
+                <thead>
+                    <tr><th>Curso</th><th>Ciclo lectivo</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="curso : ${cursos}">
+                        <td th:text="${curso.anio + '° ' + curso.division}">4° A</td>
+                        <td th:text="${curso.cicloLectivo}">2026</td>
+                        <td class="acciones">
+                            <a class="btn" th:href="@{/cursos/{id}(id=${curso.idCurso})}">Ver</a>
+                            <a class="btn" th:href="@{/cursos/{id}/editar(id=${curso.idCurso})}">Editar</a>
+                            <!-- Borrar es un formulario POST, no un link: un GET nunca debe modificar datos -->
+                            <form th:action="@{/cursos/{id}/eliminar(id=${curso.idCurso})}" method="post"
+                                  onsubmit="return confirm('¿Eliminar el curso?');">
+                                <button type="submit" class="btn btn-peligro">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

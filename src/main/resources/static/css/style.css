@@ -165,7 +165,9 @@ footer {
 
 .formulario { max-width: 420px; margin-top: 1.5rem; }
 .formulario label { display: block; font-weight: bold; margin-bottom: 4px; }
-.formulario input[type="text"] {
+.formulario input[type="text"],
+.formulario input[type="number"],
+.formulario select {
     width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
 }
 .error-campo { color: #c62828; font-size: .9rem; margin: 4px 0 0; }
@@ -175,3 +177,6 @@ footer {
 button.btn { border: 0; cursor: pointer; font: inherit; }
 .btn-peligro { background-color: #c62828; }
 .btn-peligro:hover { background-color: #8e0000; }
+
+/* Separación entre los campos de un formulario con varios datos */
+.formulario .campo { margin-bottom: 1rem; }

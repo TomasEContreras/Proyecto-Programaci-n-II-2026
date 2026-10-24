@@ -39,6 +39,12 @@ public class AlumnoService {
         return alumnoRepository.findAll(pageable);
     }
 
+    // Alumnos de un curso, ordenados por apellido y nombre
+    @Transactional(readOnly = true)
+    public List<Alumno> obtenerPorCurso(Long idCurso) {
+        return alumnoRepository.findByCurso_IdCurso(idCurso, Sort.by("apellido", "nombre"));
+    }
+
     @Transactional(readOnly = true)
     public Alumno buscarPorId(Long id) {
         return alumnoRepository.findById(id)

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del curso - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <a class="volver" th:href="@{/cursos}">&larr; Volver al listado</a>
+
+        <h1 th:text="${curso.anio + '° ' + curso.division}">4° A</h1>
+        <p class="subtitulo" th:text="${'Ciclo lectivo ' + curso.cicloLectivo}">Ciclo lectivo 2026</p>
+
+        <h2>Alumnos del curso</h2>
+        <p th:if="${#lists.isEmpty(alumnos)}" class="vacio">El curso todavía no tiene alumnos asignados.</p>
+
+        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(alumnos)}">
+            <table>
+                <thead>
+                    <tr><th>Apellido y nombre</th><th>DNI</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="alumno : ${alumnos}">
+                        <td th:text="${alumno.apellido + ', ' + alumno.nombre}">Pérez, Ana</td>
+                        <td th:text="${alumno.dni}">00000000</td>
+                        <td><a class="btn" th:href="@{/alumnos/{id}(id=${alumno.idAlumno})}">Ver</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>
