@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materia - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <a class="volver" th:href="@{/materias}">&larr; Volver al listado</a>
+
+        <!-- Un solo formulario para alta y edición: si existe idMateria, es edición -->
+        <h1 th:text="${idMateria != null} ? 'Editar materia' : 'Nueva materia'">Nueva materia</h1>
+
+        <form class="formulario" th:object="${materiaForm}" method="post"
+              th:action="${idMateria != null} ? @{/materias/{id}(id=${idMateria})} : @{/materias}">
+
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" th:field="*{nombre}">
+            <p class="error-campo" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+
+            <div class="acciones">
+                <button type="submit" class="btn">Guardar</button>
+                <a th:href="@{/materias}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

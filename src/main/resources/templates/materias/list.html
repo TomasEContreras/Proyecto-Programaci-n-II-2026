@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materias - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <h1>Materias</h1>
+        <p class="subtitulo"><span th:text="${#lists.size(materias)}">0</span> materias registradas</p>
+
+        <!-- Mensajes flash: llegan desde el controlador y se muestran una sola vez -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
+        <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+
+        <a class="btn" th:href="@{/materias/nueva}">Nueva materia</a>
+
+        <p th:if="${#lists.isEmpty(materias)}" class="vacio">Todavía no hay materias cargadas.</p>
+
+        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(materias)}">
+            <table>
+                <thead>
+                    <tr><th>Nombre</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="materia : ${materias}">
+                        <td th:text="${materia.nombre}">Matemática</td>
+                        <td class="acciones">
+                            <a class="btn" th:href="@{/materias/{id}/editar(id=${materia.idMateria})}">Editar</a>
+                            <!-- Borrar es un formulario POST, no un link: un GET nunca debe modificar datos -->
+                            <form th:action="@{/materias/{id}/eliminar(id=${materia.idMateria})}" method="post"
+                                  onsubmit="return confirm('¿Eliminar la materia?');">
+                                <button type="submit" class="btn btn-peligro">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

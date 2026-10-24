@@ -157,3 +157,21 @@ footer {
     h1 { font-size: 1.7rem; }
     .logo { font-size: 1.6rem; }
 }
+
+/* Mensajes, formularios y botones de acción */
+.mensaje { padding: 10px 14px; border-radius: 8px; margin: 1rem 0; }
+.mensaje.exito { background-color: #e8f5e9; color: #2e7d32; }
+.mensaje.error { background-color: #fdecea; color: #c62828; }
+
+.formulario { max-width: 420px; margin-top: 1.5rem; }
+.formulario label { display: block; font-weight: bold; margin-bottom: 4px; }
+.formulario input[type="text"] {
+    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
+}
+.error-campo { color: #c62828; font-size: .9rem; margin: 4px 0 0; }
+
+.acciones { display: flex; gap: 10px; align-items: center; }
+.acciones form { margin: 0; }
+button.btn { border: 0; cursor: pointer; font: inherit; }
+.btn-peligro { background-color: #c62828; }
+.btn-peligro:hover { background-color: #8e0000; }

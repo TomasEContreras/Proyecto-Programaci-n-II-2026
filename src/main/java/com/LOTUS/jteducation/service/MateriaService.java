@@ -26,12 +26,29 @@ public class MateriaService {
         return materiaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe la materia con id " + id));
     }
-
+    
+    // Regla se negocio: no se repiten materias
     @Transactional
-    public Materia guardar(Materia materia) {
+    public Materia crear(String nombre) {
+        String nombreLimpio = normalizar(nombre);
+        if (materiaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
+            throw new ReglaDeNegocioException("Ya existe una materia con ese nombre.");
+        }
+        return materiaRepository.save(new Materia(nombreLimpio));
+    }
+    
+    // Al editar se excluye la propia materia, para poder guardarla sin cambiar el nombre
+    @Transactional
+    public Materia actualizar(Long id, String nombre) {
+        Materia materia = buscarPorId(id);
+        String nombreLimpio = normalizar(nombre);
+        if (materiaRepository.existsByNombreIgnoreCaseAndIdMateriaNot(nombreLimpio, id)) {
+            throw new ReglaDeNegocioException("Ya existe una materia con ese nombre.");
+        }
+        materia.setNombre(nombreLimpio);
         return materiaRepository.save(materia);
     }
-
+    
     @Transactional
     public void eliminar(Long id) {
         if (!materiaRepository.existsById(id)) {
@@ -44,4 +61,10 @@ public class MateriaService {
             throw new ReglaDeNegocioException("No se puede eliminar la materia porque tiene notas asociadas.");
         }
     }
+    
+    // Evita NullPointerException si llega null y quita espacios sobrantes
+    private String normalizar(String nombre) {
+        return nombre == null ? "" : nombre.trim();
+    }
+    
 }
