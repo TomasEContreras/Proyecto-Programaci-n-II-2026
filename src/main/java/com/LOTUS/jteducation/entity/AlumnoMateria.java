@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.entity;
 
+import com.LOTUS.jteducation.util.Validaciones;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,22 +49,16 @@ public class AlumnoMateria {
     private BigDecimal notaFinal;
 
     public AlumnoMateria(Alumno alumno, Materia materia) {
-        setAlumno(alumno);
-        setMateria(materia);
+        this.alumno = validarAlumno(alumno);
+        this.materia = validarMateria(materia);
     }
 
     public void setAlumno(Alumno alumno) {
-        if (alumno == null) {
-            throw new IllegalArgumentException("Debe indicarse el alumno.");
-        }
-        this.alumno = alumno;
+        this.alumno = validarAlumno(alumno);
     }
 
     public void setMateria(Materia materia) {
-        if (materia == null) {
-            throw new IllegalArgumentException("Debe indicarse la materia.");
-        }
-        this.materia = materia;
+        this.materia = validarMateria(materia);
     }
 
     public void setPrimerNota(BigDecimal nota) {
@@ -78,6 +73,15 @@ public class AlumnoMateria {
         this.notaFinal = validarNota(nota);
     }
 
+    private static Alumno validarAlumno(Alumno alumno) {
+        return Validaciones.requerido(alumno, "Debe indicarse el alumno.");
+    }
+
+    private static Materia validarMateria(Materia materia) {
+        return Validaciones.requerido(materia, "Debe indicarse la materia.");
+    }
+
+    // La nota puede ser null (todavía no cargada); si existe, debe estar entre 1 y 10
     private static BigDecimal validarNota(BigDecimal nota) {
         if (nota != null && (nota.compareTo(NOTA_MIN) < 0 || nota.compareTo(NOTA_MAX) > 0)) {
             throw new IllegalArgumentException("La nota debe estar entre 1 y 10.");

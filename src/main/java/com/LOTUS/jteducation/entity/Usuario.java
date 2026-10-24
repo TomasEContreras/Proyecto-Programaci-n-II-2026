@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.entity;
 
+import com.LOTUS.jteducation.util.Validaciones;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,15 +18,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Usuario {
 
-    // Las constantes static NO son columnas: JPA las ignora. Van fuera del camino de @Id.
+    // Las constantes static NO son columnas: JPA las ignora.
     public static final int LONG_MIN_PASS = 8;
+    private static final int EMAIL_MAX = 100;       // VARCHAR(100)
+    private static final int HASH_MAX = 255;        // VARCHAR(255)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario") // El campo se llama "id", la columna "id_usuario"
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = EMAIL_MAX)
     private String email;
 
     @Column(name = "password_hash", nullable = false)
@@ -36,9 +39,9 @@ public class Usuario {
     private Rol rol;
 
     public Usuario(String email, String passwordHash, Rol rol) {
-        setEmail(email);
-        setPasswordHash(passwordHash);
-        setRol(rol);
+        this.email = validarEmail(email);
+        this.passwordHash = validarPasswordHash(passwordHash);
+        this.rol = validarRol(rol);
     }
 
     // Esta regla se aplica sobre la contraseña EN TEXTO PLANO, ANTES de hashearla
@@ -53,23 +56,30 @@ public class Usuario {
     }
 
     public void setEmail(String email) {
-        if (email == null || email.trim().isEmpty() || !email.contains("@")) {
-            throw new IllegalArgumentException("El email ingresado no es válido.");
-        }
-        this.email = email.trim();
+        this.email = validarEmail(email);
     }
 
     public void setPasswordHash(String passwordHash) {
-        if (passwordHash == null || passwordHash.trim().isEmpty()) {
-            throw new IllegalArgumentException("El hash de la contraseña no puede estar vacío.");
-        }
-        this.passwordHash = passwordHash;
+        this.passwordHash = validarPasswordHash(passwordHash);
     }
 
     public void setRol(Rol rol) {
-        if (rol == null) { // Antes la condición estaba invertida: rechazaba los roles válidos
-            throw new IllegalArgumentException("El usuario debe tener un rol.");
+        this.rol = validarRol(rol);
+    }
+
+    private static String validarEmail(String email) {
+        String limpio = Validaciones.texto(email, EMAIL_MAX, "El email");
+        if (!limpio.contains("@")) {
+            throw new IllegalArgumentException("El email ingresado no es válido.");
         }
-        this.rol = rol;
+        return limpio;
+    }
+
+    private static String validarPasswordHash(String passwordHash) {
+        return Validaciones.texto(passwordHash, HASH_MAX, "El hash de la contraseña");
+    }
+
+    private static Rol validarRol(Rol rol) {
+        return Validaciones.requerido(rol, "El usuario debe tener un rol.");
     }
 }

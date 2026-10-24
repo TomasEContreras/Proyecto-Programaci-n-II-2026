@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.entity;
 
+import com.LOTUS.jteducation.util.Validaciones;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,17 +18,17 @@ public class Materia {
     private Long idMateria;
     private String nombre;
 
+    // El constructor NO llama a los setters (son públicos y sobrescribibles): usa la validación privada
     public Materia(String nombre) {
-        setNombre(nombre);
+        this.nombre = validarNombre(nombre);
     }
 
     public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de la materia no puede estar vacío."); // decía "del alumno"
-        }
-        if (nombre.trim().length() > 45) { // El VARCHAR de la tabla es de 45
-            throw new IllegalArgumentException("El nombre de la materia no puede superar los 45 caracteres.");
-        }
-        this.nombre = nombre.trim();
+        this.nombre = validarNombre(nombre);
+    }
+
+    // Una única regla, compartida por el constructor y el setter
+    private static String validarNombre(String nombre) {
+        return Validaciones.texto(nombre, Validaciones.TEXTO_MAX, "El nombre de la materia");
     }
 }

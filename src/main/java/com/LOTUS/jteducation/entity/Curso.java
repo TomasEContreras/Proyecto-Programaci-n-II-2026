@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.entity;
 
+import com.LOTUS.jteducation.util.Validaciones;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,30 +28,34 @@ public class Curso {
     private int cicloLectivo;
 
     public Curso(int anio, Division division, int cicloLectivo) {
-        setAnio(anio);
-        setDivision(division);
-        setCicloLectivo(cicloLectivo);
+        this.anio = validarAnio(anio);
+        this.division = validarDivision(division);
+        this.cicloLectivo = validarCicloLectivo(cicloLectivo);
     }
 
     public void setAnio(int anio) {
-        // Antes: (anio <= 0 && anio > 5) -> nunca era verdadero, no validaba nada. Es un OR.
-        if (anio < ANIO_MIN || anio > ANIO_MAX) {
-            throw new IllegalArgumentException("El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX + ".");
-        }
-        this.anio = anio;
+        this.anio = validarAnio(anio);
     }
 
     public void setDivision(Division division) {
-        if (division == null) {
-            throw new IllegalArgumentException("Debe existir una división.");
-        }
-        this.division = division;
+        this.division = validarDivision(division);
     }
 
     public void setCicloLectivo(int cicloLectivo) {
-        if (cicloLectivo < CICLO_MIN) {
-            throw new IllegalArgumentException("El ciclo lectivo ingresado no es correcto.");
-        }
-        this.cicloLectivo = cicloLectivo;
+        this.cicloLectivo = validarCicloLectivo(cicloLectivo);
+    }
+
+    private static int validarAnio(int anio) {
+        return Validaciones.entero(anio, ANIO_MIN, ANIO_MAX,
+                "El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX + ".");
+    }
+
+    private static Division validarDivision(Division division) {
+        return Validaciones.requerido(division, "Debe existir una división.");
+    }
+
+    private static int validarCicloLectivo(int cicloLectivo) {
+        return Validaciones.entero(cicloLectivo, CICLO_MIN, Integer.MAX_VALUE,
+                "El ciclo lectivo ingresado no es correcto.");
     }
 }

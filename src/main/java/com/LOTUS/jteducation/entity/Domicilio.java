@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.entity;
 
+import com.LOTUS.jteducation.util.Validaciones;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,32 +20,33 @@ public class Domicilio {
     private String calle;
     private int altura;
 
-    // Constructor que reutiliza los setters, así la validación no se puede saltear
-    // (@AllArgsConstructor asignaba los campos directamente, sin validar).
     public Domicilio(String ciudad, String calle, int altura) {
-        setCiudad(ciudad);
-        setCalle(calle);
-        setAltura(altura);
+        this.ciudad = validarCiudad(ciudad);
+        this.calle = validarCalle(calle);
+        this.altura = validarAltura(altura);
     }
 
     public void setCiudad(String ciudad) {
-        if (ciudad == null || ciudad.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de la ciudad no puede estar vacío.");
-        }
-        this.ciudad = ciudad.trim();
+        this.ciudad = validarCiudad(ciudad);
     }
 
     public void setCalle(String calle) {
-        if (calle == null || calle.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre de la calle no puede estar vacío.");
-        }
-        this.calle = calle.trim();
+        this.calle = validarCalle(calle);
     }
 
     public void setAltura(int altura) {
-        if (altura <= 0) { // Una altura 0 tampoco tiene sentido
-            throw new IllegalArgumentException("La altura ingresada no es correcta.");
-        }
-        this.altura = altura;
+        this.altura = validarAltura(altura);
+    }
+
+    private static String validarCiudad(String ciudad) {
+        return Validaciones.texto(ciudad, Validaciones.TEXTO_MAX, "El nombre de la ciudad");
+    }
+
+    private static String validarCalle(String calle) {
+        return Validaciones.texto(calle, Validaciones.TEXTO_MAX, "El nombre de la calle");
+    }
+
+    private static int validarAltura(int altura) {
+        return Validaciones.entero(altura, 1, Integer.MAX_VALUE, "La altura ingresada no es correcta.");
     }
 }
