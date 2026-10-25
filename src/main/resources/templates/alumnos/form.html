@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumno - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="fragments/header :: header-nav"></header>
+<main class="container">
+    <a class="volver" th:href="@{/alumnos}">&larr; Volver al listado</a>
+    <h1 th:text="${idAlumno != null} ? 'Editar alumno' : 'Nuevo alumno'">Nuevo alumno</h1>
+    <form class="formulario" th:object="${alumnoForm}" method="post"
+          th:action="${idAlumno != null} ? @{/alumnos/{id}(id=${idAlumno})} : @{/alumnos}">
+        <p class="error-campo" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        <div class="campo"><label for="dni">DNI</label><input id="dni" type="text" inputmode="numeric" th:field="*{dni}" maxlength="8" required><p class="error-campo" th:errors="*{dni}"></p></div>
+        <div class="campo"><label for="nombre">Nombre</label><input id="nombre" th:field="*{nombre}" maxlength="45" required><p class="error-campo" th:errors="*{nombre}"></p></div>
+        <div class="campo"><label for="apellido">Apellido</label><input id="apellido" th:field="*{apellido}" maxlength="45" required><p class="error-campo" th:errors="*{apellido}"></p></div>
+        <div class="campo"><label for="fechaNacimiento">Fecha de nacimiento</label><input id="fechaNacimiento" type="date" th:field="*{fechaNacimiento}" required><p class="error-campo" th:errors="*{fechaNacimiento}"></p></div>
+        <div class="campo"><label for="fechaInscripcion">Fecha de inscripción</label><input id="fechaInscripcion" type="date" th:field="*{fechaInscripcion}" required><p class="error-campo" th:errors="*{fechaInscripcion}"></p></div>
+        <div class="campo"><label for="ciudad">Ciudad</label><input id="ciudad" th:field="*{ciudad}" maxlength="45" required><p class="error-campo" th:errors="*{ciudad}"></p></div>
+        <div class="campo"><label for="calle">Calle</label><input id="calle" th:field="*{calle}" maxlength="45" required><p class="error-campo" th:errors="*{calle}"></p></div>
+        <div class="campo"><label for="altura">Altura</label><input id="altura" type="number" min="1" th:field="*{altura}" required><p class="error-campo" th:errors="*{altura}"></p></div>
+        <div class="campo"><label for="email">Email de acceso</label><input id="email" type="email" th:field="*{email}" maxlength="100" required><p class="error-campo" th:errors="*{email}"></p></div>
+        <div class="campo"><label for="password" th:text="${idAlumno != null} ? 'Nueva contraseña (opcional)' : 'Contraseña inicial'"></label><input id="password" type="password" th:field="*{password}" minlength="8" th:required="${idAlumno == null}" autocomplete="new-password"><small th:if="${idAlumno != null}">Dejala vacía para conservar la contraseña actual.</small></div>
+        <div class="campo"><label for="idCurso">Curso</label><select id="idCurso" th:field="*{idCurso}" required><option value="">Seleccioná un curso</option><option th:each="curso : ${cursos}" th:value="${curso.idCurso}" th:text="${curso.anio + '° ' + curso.division + ' - ' + curso.cicloLectivo}"></option></select><p class="error-campo" th:errors="*{idCurso}"></p></div>
+        <div class="acciones"><button type="submit" class="btn">Guardar</button><a th:href="@{/alumnos}">Cancelar</a></div>
+    </form>
+</main>
+<footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

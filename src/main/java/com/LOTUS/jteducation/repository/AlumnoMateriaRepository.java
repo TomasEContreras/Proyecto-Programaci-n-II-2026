@@ -10,4 +10,10 @@ public interface AlumnoMateriaRepository extends JpaRepository<AlumnoMateria, Lo
 
     // "alumno.idAlumno": navega la relación y filtra por el id del alumno
     List<AlumnoMateria> findByAlumno_IdAlumno(Long idAlumno);
+
+    // ¿El alumno tiene alguna nota cargada? (exists es más liviano que traer la lista)
+    boolean existsByAlumno_IdAlumno(Long idAlumno);
+
+    // ¿Algún alumno de ESTE curso tiene notas en ESTA materia? (alumno.curso.idCurso + materia.idMateria)
+    boolean existsByAlumno_Curso_IdCursoAndMateria_IdMateria(Long idCurso, Long idMateria);
 }

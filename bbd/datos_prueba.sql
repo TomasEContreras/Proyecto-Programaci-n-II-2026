@@ -7,7 +7,13 @@ INSERT INTO curso (id_curso, anio, division, ciclo_lectivo) VALUES
 (2, 2, 'B', 2026),
 (3, 4, 'A', 2026);
 
-INSERT INTO materia (id_materia, nombre) VALUES (1,'Matemática'),(2,'Lengua y Literatura'),(3,'Historia'),(4,'Biología'),(5,'Inglés');
+INSERT INTO materia (id_materia, nombre) VALUES (1,'Matemática'),(2,'Lengua y Literatura'),(3,'Historia'),(4,'Biología'),(5,'Inglés'),(6,'Química');
+
+-- Plan de materias de cada curso (N:M). Química solo se dicta en 4° A.
+INSERT INTO curso_materia (curso_id_curso, materia_id_materia) VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
+(2, 1), (2, 2), (2, 3), (2, 4), (2, 5),
+(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6);
 
 INSERT INTO usuario (id_usuario, email, password_hash, rol) VALUES
 (1, 'admin@jteducation.com', 'hash_de_relleno_admin', 'ADMIN'),

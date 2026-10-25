@@ -107,6 +107,30 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
+-- Table `jt_education_db_red`.`curso_materia`
+-- Relación N:M: el plan de materias de cada curso. No tiene datos propios,
+-- por eso la clave primaria es la combinación de las dos claves foráneas.
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`curso_materia` (
+  `curso_id_curso` INT NOT NULL,
+  `materia_id_materia` INT NOT NULL,
+  PRIMARY KEY (`curso_id_curso`, `materia_id_materia`),
+  INDEX `fk_curso_materia_materia1_idx` (`materia_id_materia` ASC),
+  CONSTRAINT `fk_curso_materia_curso1`
+    FOREIGN KEY (`curso_id_curso`)
+    REFERENCES `jt_education_db_red`.`curso` (`id_curso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_curso_materia_materia1`
+    FOREIGN KEY (`materia_id_materia`)
+    REFERENCES `jt_education_db_red`.`materia` (`id_materia`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+
+
+-- -----------------------------------------------------
 -- Table `jt_education_db_red`.`alumno_materia`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `jt_education_db_red`.`alumno_materia` (

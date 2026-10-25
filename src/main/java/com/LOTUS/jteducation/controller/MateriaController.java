@@ -54,7 +54,7 @@ public class MateriaController {
                 materiaService.crear(form.getNombre());
                 redirect.addFlashAttribute(MSJ_EXITO, "Materia creada correctamente.");
                 vista = REDIRECT_LISTA;
-            } catch (ReglaDeNegocioException e) {
+            } catch (ReglaDeNegocioException | IllegalArgumentException e) {
                 // Error de negocio (nombre repetido): se muestra junto al campo
                 resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
             }
@@ -83,7 +83,7 @@ public class MateriaController {
                 materiaService.actualizar(id, form.getNombre());
                 redirect.addFlashAttribute(MSJ_EXITO, "Materia actualizada correctamente.");
                 vista = REDIRECT_LISTA;
-            } catch (ReglaDeNegocioException e) {
+            } catch (ReglaDeNegocioException | IllegalArgumentException e) {
                 resultado.rejectValue("nombre", "nombre.repetido", e.getMessage());
             }
         }

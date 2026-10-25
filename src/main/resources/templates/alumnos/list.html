@@ -10,7 +10,12 @@
     <header th:replace="fragments/header :: header-nav"></header>
 
     <main class="container">
-        <h1>Alumnos</h1>
+        <div th:if="${mensajeExito}" class="mensaje-exito" th:text="${mensajeExito}"></div>
+        <div th:if="${mensajeError}" class="mensaje-error" th:text="${mensajeError}"></div>
+        <div class="encabezado-listado">
+            <h1>Alumnos</h1>
+            <a class="btn" th:href="@{/alumnos/nuevo}">Nuevo alumno</a>
+        </div>
         <p class="subtitulo">
             <span th:text="${paginaAlumnos.totalElements}">0</span> alumnos registrados
         </p>

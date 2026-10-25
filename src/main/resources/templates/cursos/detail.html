@@ -15,6 +15,12 @@
         <h1 th:text="${curso.anio + '° ' + curso.division}">4° A</h1>
         <p class="subtitulo" th:text="${'Ciclo lectivo ' + curso.cicloLectivo}">Ciclo lectivo 2026</p>
 
+        <h2>Materias del curso</h2>
+        <p th:if="${#sets.isEmpty(curso.materias)}" class="vacio">El curso todavía no tiene materias asignadas.</p>
+        <ul class="lista-materias" th:unless="${#sets.isEmpty(curso.materias)}">
+            <li th:each="m : ${curso.materias}" th:text="${m.nombre}">Matemática</li>
+        </ul>
+
         <h2>Alumnos del curso</h2>
         <p th:if="${#lists.isEmpty(alumnos)}" class="vacio">El curso todavía no tiene alumnos asignados.</p>
 

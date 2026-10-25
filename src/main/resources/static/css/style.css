@@ -165,8 +165,8 @@ footer {
 
 .formulario { max-width: 420px; margin-top: 1.5rem; }
 .formulario label { display: block; font-weight: bold; margin-bottom: 4px; }
-.formulario input[type="text"],
-.formulario input[type="number"],
+/* Todos los campos de texto (también los que no declaran type, y email/password/date), menos los checkboxes */
+.formulario input:not([type="checkbox"]):not([type="radio"]),
 .formulario select {
     width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
 }
@@ -180,3 +180,19 @@ button.btn { border: 0; cursor: pointer; font: inherit; }
 
 /* Separación entre los campos de un formulario con varios datos */
 .formulario .campo { margin-bottom: 1rem; }
+
+/* Datos que se muestran en el formulario pero no se pueden editar (ej.: ciclo lectivo) */
+.formulario .etiqueta { display: block; font-weight: bold; margin-bottom: 4px; }
+.dato-fijo { margin: 0; padding: 10px; background-color: #f0f4f8; border-radius: 6px; }
+.ayuda { color: #777; }
+
+/* Checkboxes del plan de materias: grilla que se acomoda sola al ancho (responsive) */
+.formulario fieldset { border: 1px solid #ccc; border-radius: 6px; padding: 10px 14px; }
+.formulario legend { font-weight: bold; padding: 0 4px; }
+.opciones-check { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px 12px; }
+.opciones-check div { display: flex; align-items: center; gap: 6px; }
+.formulario .opciones-check label { display: inline; font-weight: normal; margin: 0; }
+
+/* Plan de materias en el detalle del curso */
+.lista-materias { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; }
+.lista-materias li { background-color: #f0f4f8; color: #1e3a5f; border-radius: 999px; padding: 4px 12px; }

@@ -7,6 +7,7 @@ import com.LOTUS.jteducation.repository.MateriaRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ public class MateriaService {
 
     @Transactional(readOnly = true)
     public List<Materia> obtenerTodas() {
-        return materiaRepository.findAll();
+        return materiaRepository.findAll(Sort.by("nombre")); // Orden alfabético: listado y checkboxes
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ public class MateriaService {
             materiaRepository.deleteById(id);
             materiaRepository.flush();
         } catch (DataIntegrityViolationException e) {
-            throw new ReglaDeNegocioException("No se puede eliminar la materia porque tiene notas asociadas.");
+            throw new ReglaDeNegocioException("No se puede eliminar la materia porque está asignada a un curso o tiene notas asociadas.");
         }
     }
     

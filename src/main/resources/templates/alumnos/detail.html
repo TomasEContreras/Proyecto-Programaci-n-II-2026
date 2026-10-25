@@ -12,6 +12,13 @@
     <main class="container">
         <a class="volver" th:href="@{/alumnos}">&larr; Volver al listado</a>
 
+        <div class="acciones">
+            <a class="btn" th:href="@{/alumnos/{id}/editar(id=${alumno.idAlumno})}">Editar alumno</a>
+            <form method="post" th:action="@{/alumnos/{id}/eliminar(id=${alumno.idAlumno})}"
+                  onsubmit="return confirm('¿Seguro que querés eliminar este alumno?');">
+                <button class="btn btn-peligro" type="submit">Eliminar alumno</button>
+            </form>
+        </div>
         <h1 th:text="${alumno.apellido + ', ' + alumno.nombre}">Apellido, Nombre</h1>
         <p class="subtitulo" th:text="${alumno.curso.anio + '° ' + alumno.curso.division + ' - Ciclo lectivo ' + alumno.curso.cicloLectivo}">4° A</p>
 
@@ -24,19 +31,21 @@
         </section>
 
         <h2>Materias y notas</h2>
-        <p th:if="${#lists.isEmpty(notas)}" class="vacio">El alumno todavía no tiene materias asignadas.</p>
+        <!-- Las materias salen del plan del curso: aparecen aunque todavía no tengan notas -->
+        <p th:if="${#lists.isEmpty(materias)}" class="vacio">El curso del alumno todavía no tiene materias asignadas.</p>
 
-        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(notas)}">
+        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(materias)}">
             <table>
                 <thead>
                     <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th></tr>
                 </thead>
                 <tbody>
-                    <tr th:each="n : ${notas}">
-                        <td th:text="${n.materia.nombre}">Matemática</td>
-                        <td th:text="${n.primerNota} ?: '-'">-</td>
-                        <td th:text="${n.segundaNota} ?: '-'">-</td>
-                        <td th:text="${n.notaFinal} ?: '-'">-</td>
+                    <!-- "?." (navegación segura): si la materia no tiene notas, da null en vez de fallar, y "?:" muestra "-" -->
+                    <tr th:each="fila : ${materias}">
+                        <td th:text="${fila.materia.nombre}">Matemática</td>
+                        <td th:text="${fila.notas?.primerNota} ?: '-'">-</td>
+                        <td th:text="${fila.notas?.segundaNota} ?: '-'">-</td>
+                        <td th:text="${fila.notas?.notaFinal} ?: '-'">-</td>
                     </tr>
                 </tbody>
             </table>

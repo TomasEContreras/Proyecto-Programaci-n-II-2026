@@ -6,6 +6,7 @@ import com.LOTUS.jteducation.entity.Division;
 import com.LOTUS.jteducation.exception.ReglaDeNegocioException;
 import com.LOTUS.jteducation.service.AlumnoService;
 import com.LOTUS.jteducation.service.CursoService;
+import com.LOTUS.jteducation.service.MateriaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -32,11 +33,18 @@ public class CursoController {
 
     private final CursoService cursoService;
     private final AlumnoService alumnoService;
+    private final MateriaService materiaService;
 
     // Las divisiones disponibles para el <select> del formulario: se agregan al modelo en todos los métodos
     @ModelAttribute("divisiones")
     public Division[] divisiones() {
         return Division.values();
+    }
+
+    // Las materias para los checkboxes: solo se cargan cuando se muestra el formulario
+    // (con @ModelAttribute se consultaría la base también en el listado y el detalle)
+    private void cargarMaterias(Model model) {
+        model.addAttribute("materias", materiaService.obtenerTodas());
     }
 
     // GET /cursos -> listado
@@ -57,6 +65,7 @@ public class CursoController {
     // GET /cursos/nuevo -> formulario vacío
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
+        cargarMaterias(model);
         model.addAttribute("cursoForm", new CursoForm());
         return VISTA_FORM;
     }
@@ -65,17 +74,20 @@ public class CursoController {
     // Una única salida: "vista" arranca en el formulario y solo cambia si todo salió bien.
     @PostMapping
     public String crear(@Valid @ModelAttribute("cursoForm") CursoForm form,
-            BindingResult resultado, RedirectAttributes redirect) {
+            BindingResult resultado, Model model, RedirectAttributes redirect) {
         String vista = VISTA_FORM;
         if (!resultado.hasErrors()) {
             try {
-                cursoService.crear(form.getAnio(), form.getDivision(), form.getCicloLectivo());
+                cursoService.crear(form.getAnio(), form.getDivision(), form.getIdsMaterias());
                 redirect.addFlashAttribute(MSJ_EXITO, "Curso creado correctamente.");
                 vista = REDIRECT_LISTA;
-            } catch (ReglaDeNegocioException e) {
-                // Error de negocio (curso repetido): es un error del formulario completo, no de un campo
-                resultado.reject("curso.repetido", e.getMessage());
+            } catch (ReglaDeNegocioException | IllegalArgumentException e) {
+                // Error de negocio (curso repetido, materia inexistente): es un error del formulario completo
+                resultado.reject("curso.regla", e.getMessage());
             }
+        }
+        if (vista.equals(VISTA_FORM)) {
+            cargarMaterias(model); // Se vuelve al formulario: hacen falta los checkboxes otra vez
         }
         return vista;
     }
@@ -83,9 +95,12 @@ public class CursoController {
     // GET /cursos/5/editar -> formulario con los datos cargados
     @GetMapping("/{id}/editar")
     public String editar(@PathVariable("id") Long id, Model model) {
+        // Primero el curso: si no existe, salta el 404 sin consultar las materias
         Curso curso = cursoService.buscarPorId(id);
-        model.addAttribute("cursoForm", new CursoForm(curso.getAnio(), curso.getDivision(), curso.getCicloLectivo()));
+        model.addAttribute("cursoForm", CursoForm.desde(curso));
         model.addAttribute("idCurso", id);
+        model.addAttribute("cicloLectivo", curso.getCicloLectivo()); // Solo se muestra: no se edita
+        cargarMaterias(model);
         return VISTA_FORM;
     }
 
@@ -98,12 +113,17 @@ public class CursoController {
         String vista = VISTA_FORM;
         if (!resultado.hasErrors()) {
             try {
-                cursoService.actualizar(id, form.getAnio(), form.getDivision(), form.getCicloLectivo());
+                cursoService.actualizar(id, form.getAnio(), form.getDivision(), form.getIdsMaterias());
                 redirect.addFlashAttribute(MSJ_EXITO, "Curso actualizado correctamente.");
                 vista = REDIRECT_LISTA;
-            } catch (ReglaDeNegocioException e) {
-                resultado.reject("curso.repetido", e.getMessage());
+            } catch (ReglaDeNegocioException | IllegalArgumentException e) {
+                // Curso repetido o materia con notas que no se puede quitar: error del formulario completo
+                resultado.reject("curso.regla", e.getMessage());
             }
+        }
+        if (vista.equals(VISTA_FORM)) {
+            model.addAttribute("cicloLectivo", cursoService.buscarPorId(id).getCicloLectivo());
+            cargarMaterias(model);
         }
         return vista;
     }

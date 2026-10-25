@@ -2,10 +2,14 @@ package com.LOTUS.jteducation.dto;
 
 import com.LOTUS.jteducation.entity.Curso;
 import com.LOTUS.jteducation.entity.Division;
+import com.LOTUS.jteducation.entity.Materia;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CursoForm {
 
     @NotNull(message = "El año es obligatorio")
@@ -27,8 +30,20 @@ public class CursoForm {
     @NotNull(message = "La división es obligatoria")
     private Division division;
 
-    @NotNull(message = "El ciclo lectivo es obligatorio")
-    @Min(value = Curso.CICLO_MIN, message = "El ciclo lectivo ingresado no es correcto")
-    private Integer cicloLectivo;
+    // El ciclo lectivo NO está acá a propósito: lo asigna el sistema (año actual) al crear el curso.
 
+    // El formulario solo envía los ids de los checkboxes marcados; el servicio los convierte en materias
+    @NotEmpty(message = "Elegí al menos una materia para el curso")
+    private Set<Long> idsMaterias = new HashSet<>();
+
+    // Carga el formulario de edición con los datos actuales del curso
+    public static CursoForm desde(Curso curso) {
+        CursoForm form = new CursoForm();
+        form.setAnio(curso.getAnio());
+        form.setDivision(curso.getDivision());
+        form.setIdsMaterias(curso.getMaterias().stream()
+                .map(Materia::getIdMateria)
+                .collect(Collectors.toSet()));
+        return form;
+    }
 }
