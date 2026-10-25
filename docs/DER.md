@@ -26,7 +26,7 @@ erDiagram
     }
     ALUMNO {
         INT id_alumno PK
-        VARCHAR(45) dni UK
+        VARCHAR(8) dni UK "7 u 8 dígitos"
         VARCHAR(45) nombre
         VARCHAR(45) apellido
         DATE fecha_nacimiento
@@ -39,17 +39,17 @@ erDiagram
         INT id_domicilio PK
         VARCHAR(45) ciudad
         VARCHAR(45) calle
-        INT altura
+        INT altura "mayor a 0"
     }
     CURSO {
         INT id_curso PK
-        INT anio "1 a 6"
+        INT anio "1 a 6, UK junto con division y ciclo"
         ENUM division "A | B | C"
         INT ciclo_lectivo "año en que se creó"
     }
     MATERIA {
         INT id_materia PK
-        VARCHAR(45) nombre
+        VARCHAR(45) nombre UK
     }
     CURSO_MATERIA {
         INT curso_id_curso PK,FK
@@ -79,6 +79,15 @@ El enunciado pide al menos una relación de cada tipo. Están todas:
 
 **Sobre Alumno – Domicilio:** la 1:1 la garantiza la aplicación, porque cada alta de alumno crea su propio domicilio y nunca se reutiliza uno existente. A diferencia de `usuario_id_usuario`, la columna `domicilio_id_domicilio` no tiene `UNIQUE` en la base.
 
+## Restricciones de la base
+
+Además de las claves primarias y foráneas, la base controla:
+
+- `UNIQUE`: `usuario.email`, `alumno.dni`, `alumno.usuario_id_usuario`, `materia.nombre`, `curso (anio, division, ciclo_lectivo)` y `alumno_materia (alumno, materia)`.
+- `CHECK`: `curso.anio` entre 1 y 6, `curso.ciclo_lectivo` desde 2000, `domicilio.altura` mayor a 0, y cada nota entre 1 y 10 (o `NULL` si todavía no se cargó).
+
+Las mismas reglas se validan antes en la aplicación (formularios, entidades y servicios) para mostrar un mensaje claro; las de la base son la última barrera.
+
 ## Reglas que conectan las tablas
 
 Estas reglas no se pueden expresar solo con claves foráneas; las controla la capa de servicios:
@@ -89,11 +98,11 @@ Estas reglas no se pueden expresar solo con claves foráneas; las controla la ca
 - **No se repite un curso:** la combinación año + división + ciclo lectivo es única.
 - **El ciclo lectivo lo asigna el sistema** (año actual) al crear el curso.
 
-## Diagramas anteriores
+## Otros diagramas
 
-En [`bbd/`](../bbd/) están los diagramas originales del diseño:
+En [`bbd/`](../bbd/) están los mismos diagramas hechos con otras herramientas:
 
-- `DER_Proyecto.drawio`: primer diseño, más grande (escuela, inscripciones, años). **No corresponde a la base actual.**
-- `DER_REDUCIDO.drawio` y `Escuela_EER.mwb`: versión reducida, **sin la relación Curso – Materia** (`curso_materia`).
+- [`DER.drawio`](../bbd/DER.drawio) ([imagen](../bbd/DER.drawio.png)): modelo conceptual en notación de Chen (entidades, atributos y relaciones con su cardinalidad).
+- [`EER.jpeg`](../bbd/EER.jpeg): modelo físico generado con MySQL Workbench.
 
-El diagrama de este documento es el que refleja la base actual.
+![DER conceptual](../bbd/DER.drawio.png)

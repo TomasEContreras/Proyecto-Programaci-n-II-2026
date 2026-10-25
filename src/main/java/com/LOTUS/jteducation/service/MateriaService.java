@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MateriaService {
 
+    private static final String MSJ_REPETIDA = "Ya existe una materia con ese nombre.";
+
     private final MateriaRepository materiaRepository;
 
     @Transactional(readOnly = true)
@@ -33,9 +35,9 @@ public class MateriaService {
     public Materia crear(String nombre) {
         String nombreLimpio = normalizar(nombre);
         if (materiaRepository.existsByNombreIgnoreCase(nombreLimpio)) {
-            throw new ReglaDeNegocioException("Ya existe una materia con ese nombre.");
+            throw new ReglaDeNegocioException(MSJ_REPETIDA);
         }
-        return materiaRepository.save(new Materia(nombreLimpio));
+        return guardar(new Materia(nombreLimpio));
     }
     
     // Al editar se excluye la propia materia, para poder guardarla sin cambiar el nombre
@@ -44,10 +46,10 @@ public class MateriaService {
         Materia materia = buscarPorId(id);
         String nombreLimpio = normalizar(nombre);
         if (materiaRepository.existsByNombreIgnoreCaseAndIdMateriaNot(nombreLimpio, id)) {
-            throw new ReglaDeNegocioException("Ya existe una materia con ese nombre.");
+            throw new ReglaDeNegocioException(MSJ_REPETIDA);
         }
         materia.setNombre(nombreLimpio);
-        return materiaRepository.save(materia);
+        return guardar(materia);
     }
     
     @Transactional
@@ -63,6 +65,17 @@ public class MateriaService {
         }
     }
     
+    // La base también tiene UNIQUE (nombre): si dos personas guardan el mismo nombre a la vez,
+    // las dos pasan el chequeo de arriba y la base frena a la segunda. saveAndFlush ejecuta el INSERT/UPDATE
+    // acá mismo, así el error se puede capturar y mostrar en el formulario.
+    private Materia guardar(Materia materia) {
+        try {
+            return materiaRepository.saveAndFlush(materia);
+        } catch (DataIntegrityViolationException e) {
+            throw new ReglaDeNegocioException(MSJ_REPETIDA);
+        }
+    }
+
     // Evita NullPointerException si llega null y quita espacios sobrantes
     private String normalizar(String nombre) {
         return nombre == null ? "" : nombre.trim();

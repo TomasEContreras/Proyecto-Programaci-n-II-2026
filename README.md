@@ -18,10 +18,15 @@ Segundo parcial de Programación II (INSPT). La propuesta completa está en [Pro
 ## Cómo levantar el proyecto
 
 1. **Crear la base de datos.** En MySQL, ejecutar en este orden:
-   1. [`bbd/Escuela_DDL.sql`](bbd/Escuela_DDL.sql): crea la base `jt_education_db_red` y sus tablas.
+   1. [`bbd/Escuela_DDL.sql`](bbd/Escuela_DDL.sql): crea la base `jt_education_db_red` y sus tablas. **Si la base ya existe, la borra y la crea de nuevo**, así que sirve también para actualizarla después de un cambio en las tablas.
    2. [`bbd/datos_prueba.sql`](bbd/datos_prueba.sql): carga cursos, materias, alumnos y notas de ejemplo.
 
-   Si ya tenías la base creada de antes, en lugar de recrearla podés correr [`bbd/migracion_curso_materia.sql`](bbd/migracion_curso_materia.sql), que agrega el plan de materias de cada curso sin borrar tus datos.
+   Usuarios de prueba:
+
+   | Rol | Email | Contraseña |
+   |---|---|---|
+   | Administrador | `admin@jteducation.com` | `Admin1234` |
+   | Alumno | el email de cualquier alumno (por ejemplo `lucia.fernandez@mail.com`) | `Alumno1234` |
 
 2. **Configurar la conexión** en [`src/main/resources/application.properties`](src/main/resources/application.properties) (usuario y contraseña de tu MySQL). La URL se puede cambiar sin tocar el archivo con la variable de entorno `DB_URL`.
 

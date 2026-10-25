@@ -1,34 +1,45 @@
--- Datos de PRUEBA para ver el frontend (ejecutar DESPUÉS de Escuela_DDL.sql)
--- Los password_hash son texto de relleno: cuando se agregue Spring Security se reemplazan por hashes BCrypt reales.
+-- =====================================================================
+-- JTEducation - Datos de PRUEBA (ejecutar DESPUÉS de Escuela_DDL.sql)
+--
+-- Usuarios para iniciar sesión (las contraseñas se guardan hasheadas con BCrypt):
+--   Administrador: admin@jteducation.com / Admin1234
+--   Alumnos:       el email de cada alumno  / Alumno1234
+-- =====================================================================
 USE jt_education_db_red;
 
 INSERT INTO curso (id_curso, anio, division, ciclo_lectivo) VALUES
 (1, 1, 'A', 2026),
 (2, 2, 'B', 2026),
-(3, 4, 'A', 2026);
+(3, 4, 'A', 2026),
+(4, 5, 'B', 2026);
 
-INSERT INTO materia (id_materia, nombre) VALUES (1,'Matemática'),(2,'Lengua y Literatura'),(3,'Historia'),(4,'Biología'),(5,'Inglés'),(6,'Química');
+INSERT INTO materia (id_materia, nombre) VALUES
+(1, 'Matemática'), (2, 'Lengua y Literatura'), (3, 'Historia'), (4, 'Biología'),
+(5, 'Inglés'), (6, 'Química'), (7, 'Geografía Argentina'), (8, 'Formación Ética');
 
--- Plan de materias de cada curso (N:M). Química solo se dicta en 4° A.
+-- Plan de materias de cada curso (N:M). Cada curso tiene su propio plan:
+-- Química solo se dicta en 4° A, y Geografía Argentina y Formación Ética, en 5° B.
 INSERT INTO curso_materia (curso_id_curso, materia_id_materia) VALUES
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
 (2, 1), (2, 2), (2, 3), (2, 4), (2, 5),
-(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6);
+(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6),
+(4, 1), (4, 2), (4, 3), (4, 5), (4, 7), (4, 8);
 
 INSERT INTO usuario (id_usuario, email, password_hash, rol) VALUES
-(1, 'admin@jteducation.com', 'hash_de_relleno_admin', 'ADMIN'),
-(2, 'lucia.fernandez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(3, 'mateo.gonzalez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(4, 'valentina.rodriguez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(5, 'santiago.lopez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(6, 'camila.martinez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(7, 'benjamin.perez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(8, 'sofia.gomez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(9, 'thiago.sanchez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(10, 'martina.diaz@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(11, 'joaquin.romero@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(12, 'emma.alvarez@mail.com', 'hash_de_relleno', 'ALUMNO'),
-(13, 'lautaro.torres@mail.com', 'hash_de_relleno', 'ALUMNO');
+(1, 'admin@jteducation.com', '$2a$10$azGC9s/U9Al8x3u57y.6aeE7VxBK1EBbfWC3YVlRo1HdbGM6/pYY2', 'ADMIN'),
+(2, 'lucia.fernandez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(3, 'mateo.gonzalez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(4, 'valentina.rodriguez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(5, 'santiago.lopez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(6, 'camila.martinez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(7, 'benjamin.perez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(8, 'sofia.gomez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(9, 'thiago.sanchez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(10, 'martina.diaz@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(11, 'joaquin.romero@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(12, 'emma.alvarez@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(13, 'lautaro.torres@mail.com', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO'),
+(14, 'joelaramayo1@gmail', '$2a$10$hfsJLS1HHbNs7ZPGIDZNYulFLAo41sPSiB/QXRXkdNXO9OuZc3//q', 'ALUMNO');
 
 INSERT INTO domicilio (id_domicilio, ciudad, calle, altura) VALUES
 (1, 'Goya', 'San Martín', 100),
@@ -42,7 +53,8 @@ INSERT INTO domicilio (id_domicilio, ciudad, calle, altura) VALUES
 (9, 'Goya', 'Colón', 396),
 (10, 'Goya', 'Italia', 433),
 (11, 'Goya', 'Pellegrini', 470),
-(12, 'Goya', 'Córdoba', 507);
+(12, 'Goya', 'Córdoba', 507),
+(13, 'Capital Federal', 'Girilbone', 120);
 
 INSERT INTO alumno (id_alumno, dni, nombre, apellido, fecha_nacimiento, fecha_inscripcion, usuario_id_usuario, curso_id_curso, domicilio_id_domicilio) VALUES
 (1, '40000000', 'Lucía', 'Fernández', '2012-01-01', '2026-03-01', 2, 1, 1),
@@ -56,7 +68,8 @@ INSERT INTO alumno (id_alumno, dni, nombre, apellido, fecha_nacimiento, fecha_in
 (9, '49876536', 'Martina', 'Díaz', '2009-09-09', '2026-03-04', 10, 3, 9),
 (10, '51111103', 'Joaquín', 'Romero', '2012-10-10', '2026-03-05', 11, 1, 10),
 (11, '52345670', 'Emma', 'Álvarez', '2011-11-11', '2026-03-01', 12, 2, 11),
-(12, '53580237', 'Lautaro', 'Torres', '2009-12-12', '2026-03-02', 13, 3, 12);
+(12, '53580237', 'Lautaro', 'Torres', '2009-12-12', '2026-03-02', 13, 3, 12),
+(13, '47079238', 'Joel', 'Aramayo', '2015-11-24', '2026-02-02', 14, 1, 13);
 
 INSERT INTO alumno_materia (alumno_id_alumno, materia_id_materia, primer_nota, segunda_nota, nota_final) VALUES
 (1, 1, 6, 7, 8),
@@ -111,4 +124,5 @@ INSERT INTO alumno_materia (alumno_id_alumno, materia_id_materia, primer_nota, s
 (12, 1, 6, 5, 6),
 (12, 2, 7, 7, 7),
 (12, 4, 9, 8, 9),
-(12, 5, 5, 6, 6);
+(12, 5, 5, 6, 6),
+(13, 4, 8, 5, 6);

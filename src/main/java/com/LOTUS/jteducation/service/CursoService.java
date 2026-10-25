@@ -48,7 +48,7 @@ public class CursoService {
         }
         Curso curso = new Curso(anio, division, cicloLectivo);
         curso.setMaterias(buscarMaterias(idsMaterias));
-        return cursoRepository.save(curso);
+        return guardar(curso);
     }
 
     // Al editar, el curso conserva su ciclo lectivo original (un 1° A de 2025 sigue siendo de 2025).
@@ -64,7 +64,7 @@ public class CursoService {
         curso.setAnio(anio);
         curso.setDivision(division);
         curso.setMaterias(buscarMaterias(idsMaterias));
-        return cursoRepository.save(curso);
+        return guardar(curso);
     }
 
     @Transactional
@@ -78,6 +78,16 @@ public class CursoService {
             cursoRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new ReglaDeNegocioException("No se puede eliminar el curso porque tiene alumnos asociados.");
+        }
+    }
+
+    // La base también tiene UNIQUE (anio, division, ciclo_lectivo): si dos personas crean el mismo curso
+    // a la vez, la base frena al segundo y se muestra el mismo mensaje que el chequeo previo.
+    private Curso guardar(Curso curso) {
+        try {
+            return cursoRepository.saveAndFlush(curso);
+        } catch (DataIntegrityViolationException e) {
+            throw new ReglaDeNegocioException(MSJ_REPETIDO);
         }
     }
 
