@@ -12,6 +12,10 @@
     <main class="container">
         <a class="volver" th:href="@{/alumnos}">&larr; Volver al listado</a>
 
+        <!-- Mensajes flash: por ejemplo, al volver de cargar notas -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
+        <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+
         <div class="acciones">
             <a class="btn" th:href="@{/alumnos/{id}/editar(id=${alumno.idAlumno})}">Editar alumno</a>
             <form method="post" th:action="@{/alumnos/{id}/eliminar(id=${alumno.idAlumno})}"
@@ -37,7 +41,7 @@
         <div class="tabla-wrapper" th:if="${!#lists.isEmpty(materias)}">
             <table>
                 <thead>
-                    <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th></tr>
+                    <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th><th></th></tr>
                 </thead>
                 <tbody>
                     <!-- "?." (navegación segura): si la materia no tiene notas, da null en vez de fallar, y "?:" muestra "-" -->
@@ -46,6 +50,11 @@
                         <td th:text="${fila.notas?.primerNota} ?: '-'">-</td>
                         <td th:text="${fila.notas?.segundaNota} ?: '-'">-</td>
                         <td th:text="${fila.notas?.notaFinal} ?: '-'">-</td>
+                        <td>
+                            <a class="btn"
+                               th:href="@{/alumnos/{idA}/notas/{idM}(idA=${alumno.idAlumno}, idM=${fila.materia.idMateria})}"
+                               th:text="${fila.notas != null} ? 'Editar notas' : 'Cargar notas'">Cargar notas</a>
+                        </td>
                     </tr>
                 </tbody>
             </table>

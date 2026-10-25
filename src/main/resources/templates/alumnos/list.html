@@ -10,8 +10,8 @@
     <header th:replace="fragments/header :: header-nav"></header>
 
     <main class="container">
-        <div th:if="${mensajeExito}" class="mensaje-exito" th:text="${mensajeExito}"></div>
-        <div th:if="${mensajeError}" class="mensaje-error" th:text="${mensajeError}"></div>
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
+        <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
         <div class="encabezado-listado">
             <h1>Alumnos</h1>
             <a class="btn" th:href="@{/alumnos/nuevo}">Nuevo alumno</a>
