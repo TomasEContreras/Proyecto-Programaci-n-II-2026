@@ -2,6 +2,7 @@ package com.LOTUS.jteducation.controller;
 
 import com.LOTUS.jteducation.dto.AlumnoForm;
 import com.LOTUS.jteducation.entity.Alumno;
+import com.LOTUS.jteducation.exception.RecursoNoEncontradoException;
 import com.LOTUS.jteducation.exception.ReglaDeNegocioException;
 import com.LOTUS.jteducation.service.AlumnoMateriaService;
 import com.LOTUS.jteducation.service.AlumnoService;
@@ -29,6 +30,7 @@ public class AlumnoController {
     private static final String REDIRECT_LISTA = "redirect:/alumnos";
     private static final String MSJ_EXITO = "mensajeExito";
     private static final String MSJ_ERROR = "mensajeError";
+    private static final String MSJ_INFO = "mensajeInfo";
 
     private final AlumnoService alumnoService;
     private final AlumnoMateriaService alumnoMateriaService;
@@ -101,11 +103,14 @@ public class AlumnoController {
         return VISTA_FORM;
     }
 
+    // Si el alumno ya no existe, solo se avisa (lo que se quería ya pasó); si tiene notas, es un error.
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirect) {
         try {
             alumnoService.eliminar(id);
             redirect.addFlashAttribute(MSJ_EXITO, "Alumno eliminado correctamente.");
+        } catch (RecursoNoEncontradoException e) {
+            redirect.addFlashAttribute(MSJ_INFO, "El alumno ya había sido eliminado.");
         } catch (ReglaDeNegocioException e) {
             redirect.addFlashAttribute(MSJ_ERROR, e.getMessage());
         }

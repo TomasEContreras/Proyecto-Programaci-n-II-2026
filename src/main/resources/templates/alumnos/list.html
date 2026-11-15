@@ -12,6 +12,7 @@
     <main class="container">
         <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
         <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+        <p th:if="${mensajeInfo}" class="mensaje info" th:text="${mensajeInfo}"></p>
         <div class="encabezado-listado">
             <h1>Alumnos</h1>
             <a class="btn" th:href="@{/alumnos/nuevo}">Nuevo alumno</a>

@@ -2,6 +2,7 @@ package com.LOTUS.jteducation.controller;
 
 import com.LOTUS.jteducation.dto.MateriaForm;
 import com.LOTUS.jteducation.entity.Materia;
+import com.LOTUS.jteducation.exception.RecursoNoEncontradoException;
 import com.LOTUS.jteducation.exception.ReglaDeNegocioException;
 import com.LOTUS.jteducation.service.MateriaService;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class MateriaController {
     private static final String REDIRECT_LISTA = "redirect:/materias";
     private static final String MSJ_EXITO = "mensajeExito";
     private static final String MSJ_ERROR = "mensajeError";
+    private static final String MSJ_INFO = "mensajeInfo";
 
     private final MateriaService materiaService;
 
@@ -90,12 +92,15 @@ public class MateriaController {
         return vista;
     }
 
-    // Modificar datos solo por POST, nunca por GET
+    // Modificar datos solo por POST, nunca por GET.
+    // Si la materia ya no existe, solo se avisa (lo que se quería ya pasó); si está en uso, es un error.
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable("id") Long id, RedirectAttributes redirect) {
         try {
             materiaService.eliminar(id);
             redirect.addFlashAttribute(MSJ_EXITO, "Materia eliminada correctamente.");
+        } catch (RecursoNoEncontradoException e) {
+            redirect.addFlashAttribute(MSJ_INFO, "La materia ya había sido eliminada.");
         } catch (ReglaDeNegocioException e) {
             redirect.addFlashAttribute(MSJ_ERROR, e.getMessage());
         }

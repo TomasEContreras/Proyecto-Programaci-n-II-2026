@@ -75,6 +75,8 @@ public class CursoService {
         try {
             // Hibernate borra solo las filas de curso_materia: el curso es el dueño de la relación
             cursoRepository.deleteById(id);
+            // flush: el DELETE se ejecuta acá y no al final de la transacción, así el error de la base
+            // (el curso tiene alumnos) salta dentro del try y se puede capturar
             cursoRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new ReglaDeNegocioException("No se puede eliminar el curso porque tiene alumnos asociados.");

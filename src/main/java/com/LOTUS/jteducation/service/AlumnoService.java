@@ -20,7 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,8 @@ public class AlumnoService {
     private final CursoRepository cursoRepository;
     private final UsuarioRepository usuarioRepository;
     private final AlumnoMateriaRepository alumnoMateriaRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    // Inyectado (ver SeguridadConfig): se depende de la interfaz y no se crea con new
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<Alumno> obtenerTodos() { return alumnoRepository.findAll(); }

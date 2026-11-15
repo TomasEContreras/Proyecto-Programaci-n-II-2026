@@ -17,6 +17,8 @@ public class MateriaService {
 
     private static final String MSJ_REPETIDA = "Ya existe una materia con ese nombre.";
 
+    // Es una interfaz: la clase que la implementa la genera Spring Data al arrancar y la inyecta por el
+    // constructor (@RequiredArgsConstructor). El servicio solo conoce los métodos, no la clase concreta.
     private final MateriaRepository materiaRepository;
 
     @Transactional(readOnly = true)

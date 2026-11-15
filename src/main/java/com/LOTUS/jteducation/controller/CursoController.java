@@ -3,6 +3,7 @@ package com.LOTUS.jteducation.controller;
 import com.LOTUS.jteducation.dto.CursoForm;
 import com.LOTUS.jteducation.entity.Curso;
 import com.LOTUS.jteducation.entity.Division;
+import com.LOTUS.jteducation.exception.RecursoNoEncontradoException;
 import com.LOTUS.jteducation.exception.ReglaDeNegocioException;
 import com.LOTUS.jteducation.service.AlumnoService;
 import com.LOTUS.jteducation.service.CursoService;
@@ -30,6 +31,7 @@ public class CursoController {
     private static final String REDIRECT_LISTA = "redirect:/cursos";
     private static final String MSJ_EXITO = "mensajeExito";
     private static final String MSJ_ERROR = "mensajeError";
+    private static final String MSJ_INFO = "mensajeInfo";
 
     private final CursoService cursoService;
     private final AlumnoService alumnoService;
@@ -128,12 +130,17 @@ public class CursoController {
         return vista;
     }
 
-    // Modificar datos solo por POST, nunca por GET
+    // Modificar datos solo por POST, nunca por GET.
+    // Cada excepción se trata distinto porque no significan lo mismo para el usuario:
+    // - el curso ya no existe (otra persona lo borró antes): lo que se quería ya pasó, solo se avisa
+    // - el curso tiene alumnos: no se pudo borrar, se muestra el motivo como error
     @PostMapping("/{id}/eliminar")
     public String eliminar(@PathVariable("id") Long id, RedirectAttributes redirect) {
         try {
             cursoService.eliminar(id);
             redirect.addFlashAttribute(MSJ_EXITO, "Curso eliminado correctamente.");
+        } catch (RecursoNoEncontradoException e) {
+            redirect.addFlashAttribute(MSJ_INFO, "El curso ya había sido eliminado.");
         } catch (ReglaDeNegocioException e) {
             redirect.addFlashAttribute(MSJ_ERROR, e.getMessage());
         }

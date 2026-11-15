@@ -22,6 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <!-- Mensajes flash: llegan desde el controlador y se muestran una sola vez -->
         <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
         <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+        <p th:if="${mensajeInfo}" class="mensaje info" th:text="${mensajeInfo}"></p>
 
         <a class="btn" th:href="@{/materias/nueva}">Nueva materia</a>
 

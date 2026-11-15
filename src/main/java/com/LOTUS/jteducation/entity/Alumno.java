@@ -42,6 +42,8 @@ public class Alumno {
     private Usuario usuario;
 
     // RELACIÓN 1:N. Muchos alumnos pertenecen a un curso.
+    // LAZY: al traer un alumno no se trae su curso; se busca recién cuando se usa getCurso().
+    // Así los listados que no muestran el curso no hacen consultas de más.
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "curso_id_curso", nullable = false)
     private Curso curso;
