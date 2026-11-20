@@ -1,11 +1,17 @@
 <header th:fragment="header-nav">
     <a class="logo" th:href="@{/}"><img th:src="@{/images/logo.png}" alt="JTEducation" class="logo-img"></a>
-    <nav>
+    <!-- El menú solo se muestra con una sesión iniciada -->
+    <nav th:if="${emailUsuario != null}">
         <ul>
             <li><a th:href="@{/}">Inicio</a></li>
             <li><a th:href="@{/alumnos}">Alumnos</a></li>
             <li><a th:href="@{/materias}">Materias</a></li>
             <li><a th:href="@{/cursos}">Cursos</a></li>
         </ul>
+        <!-- Cerrar sesión es un POST (con token CSRF que agrega th:action), nunca un link GET -->
+        <form class="sesion" method="post" th:action="@{/logout}">
+            <span class="sesion-usuario" th:text="${emailUsuario}">usuario@mail.com</span>
+            <button type="submit" class="btn btn-secundario">Cerrar sesión</button>
+        </form>
     </nav>
 </header>
