@@ -1,5 +1,6 @@
 package com.LOTUS.jteducation.config;
 
+import com.LOTUS.jteducation.entity.Rol;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +30,10 @@ public class SeguridadConfig {
             .authorizeHttpRequests(permisos -> permisos
                 // Las reglas se evalúan en orden: de la más específica a la más general
                 .requestMatchers("/css/**", "/images/**", "/login", "/error").permitAll()
-                .anyRequest().authenticated())
+                // Toda la gestión (alumnos, cursos, materias y notas) es solo para el administrador.
+                // hasRole("ADMIN") busca el permiso "ROLE_ADMIN" que le da UsuarioDetailsService.
+                // Un ALUMNO logueado que intenta entrar recibe un error 403 (prohibido).
+                .anyRequest().hasRole(Rol.ADMIN.name()))
             .formLogin(login -> login
                 .loginPage("/login")             // Nuestra propia página (templates/login.html)
                 .usernameParameter("email")      // El usuario se identifica con su email

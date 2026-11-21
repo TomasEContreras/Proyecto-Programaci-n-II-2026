@@ -1,8 +1,9 @@
 <header th:fragment="header-nav">
     <a class="logo" th:href="@{/}"><img th:src="@{/images/logo.png}" alt="JTEducation" class="logo-img"></a>
-    <!-- El menú solo se muestra con una sesión iniciada -->
+    <!-- El menú solo se muestra con una sesión iniciada, y los links de gestión solo al administrador.
+         Ocultar links es comodidad: los permisos reales los controla SeguridadConfig. -->
     <nav th:if="${emailUsuario != null}">
-        <ul>
+        <ul th:if="${esAdmin}">
             <li><a th:href="@{/}">Inicio</a></li>
             <li><a th:href="@{/alumnos}">Alumnos</a></li>
             <li><a th:href="@{/materias}">Materias</a></li>

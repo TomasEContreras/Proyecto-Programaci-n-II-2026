@@ -1,5 +1,7 @@
 package com.LOTUS.jteducation.exception;
 
+import com.LOTUS.jteducation.controller.GlobalControllerAdvice;
+import com.LOTUS.jteducation.entity.Rol;
 import java.security.Principal;
 import java.time.Year;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -51,6 +53,7 @@ public class GlobalExceptionHandler {
         // Los @ModelAttribute de GlobalControllerAdvice no corren en los @ExceptionHandler: se agregan a mano
         mav.addObject("anioActual", Year.now().getValue());
         mav.addObject("emailUsuario", principal == null ? null : principal.getName()); // Para mostrar el menú
+        mav.addObject("esAdmin", GlobalControllerAdvice.tieneRol(principal, Rol.ADMIN));
         return mav;
     }
 }

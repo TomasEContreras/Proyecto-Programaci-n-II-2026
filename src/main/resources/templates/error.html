@@ -32,8 +32,10 @@
         <!-- Cualquier otro error: caja simple -->
         <div class="error-box" th:unless="${status == 404}">
             <p class="error-codigo" th:text="${status}">500</p>
-            <h1 th:text="${titulo} ?: 'Ocurrió un error'">Error</h1>
-            <p class="subtitulo" th:text="${mensaje} ?: 'No pudimos completar lo que pediste. Volvé a intentarlo más tarde.'">Mensaje</p>
+            <!-- 403: Spring Security bloqueó la página porque el rol del usuario no tiene permiso -->
+            <h1 th:text="${status == 403} ? 'No tenés permiso' : (${titulo} ?: 'Ocurrió un error')">Error</h1>
+            <p class="subtitulo" th:text="${status == 403} ? 'Tu usuario no puede ver esta página.'
+                    : (${mensaje} ?: 'No pudimos completar lo que pediste. Volvé a intentarlo más tarde.')">Mensaje</p>
             <a class="btn" th:href="@{/}">Volver al inicio</a>
         </div>
     </main>
