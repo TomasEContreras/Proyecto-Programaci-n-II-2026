@@ -1,6 +1,6 @@
 # Mapa del sitio
 
-Páginas de JTEducation y cómo se navega entre ellas. El menú superior (Inicio, Alumnos, Materias, Cursos) está en todas las páginas, así que desde cualquiera se puede ir a las secciones principales.
+Páginas de JTEducation y cómo se navega entre ellas. Sin sesión iniciada solo se puede ver el login. Con sesión, el menú superior está en todas las páginas: el **administrador** ve Inicio, Alumnos, Materias y Cursos; el **alumno** ve solo "Mi ficha". Los dos tienen el botón "Cerrar sesión".
 
 > Si cambian las páginas o las rutas, hay que actualizar este documento.
 
@@ -10,8 +10,10 @@ Las flechas indican un link o botón de una página a otra. Las acciones que mod
 
 ```mermaid
 flowchart TD
-    MENU(["Menú superior<br/>(en todas las páginas)"])
+    LOGIN["Iniciar sesión<br/>/login"]
+    MENU(["Menú del administrador<br/>(en todas sus páginas)"])
     INICIO["Inicio<br/>/"]
+    MI_FICHA["Mi ficha (alumno)<br/>/mi-ficha"]
 
     subgraph Alumnos
         AL_LISTA["Listado de alumnos<br/>/alumnos"]
@@ -31,7 +33,11 @@ flowchart TD
         MA_FORM["Formulario de materia<br/>/materias/nueva<br/>/materias/{id}/editar"]
     end
 
-    ERROR["Página de error<br/>(404, 409, 400, 500)"]
+    ERROR["Página de error<br/>(403, 404, 409, 400, 500)"]
+
+    LOGIN -.->|"Ingresar como administrador (POST)"| INICIO
+    LOGIN -.->|"Ingresar como alumno (POST)"| MI_FICHA
+    INICIO & MI_FICHA -.->|"Cerrar sesión (POST)"| LOGIN
 
     MENU --> INICIO & AL_LISTA & CU_LISTA & MA_LISTA
 
@@ -57,13 +63,19 @@ flowchart TD
     MA_FORM -.->|"Guardar (POST)"| MA_LISTA
 ```
 
-Cualquier página puede terminar en la **página de error** si se pide algo que no existe (por ejemplo `/alumnos/999`, error 404) o si una operación viola una regla que no se puede mostrar en un formulario (error 409).
+Cualquier página puede terminar en la **página de error** si se pide algo que no existe (por ejemplo `/alumnos/999`, error 404), si una operación viola una regla que no se puede mostrar en un formulario (error 409) o si un alumno intenta entrar a una página de gestión (error 403, "No tenés permiso").
+
+Los permisos de cada rol están detallados en [Casos de uso](Casos%20de%20uso.md#permisos).
 
 ## Rutas
 
 | Página | Método y URL | Vista (`templates/`) | Qué hace |
 |---|---|---|---|
-| Inicio | `GET /` | `index.html` | Muestra los 6 últimos alumnos inscriptos. |
+| Iniciar sesión | `GET /login` | `login.html` | Formulario de email y contraseña. Si ya hay sesión, redirige al inicio. |
+| Ingresar | `POST /login` | redirige a `/` | Lo procesa Spring Security. Si los datos no coinciden, vuelve a `/login?error`. |
+| Cerrar sesión | `POST /logout` | redirige a `/login?salir` | Termina la sesión y borra la cookie. |
+| Inicio | `GET /` | `index.html` | Administrador: muestra los 6 últimos alumnos inscriptos. Alumno: lo redirige a `/mi-ficha`. |
+| Mi ficha | `GET /mi-ficha` | `alumnos/mi-ficha.html` | Solo alumnos. Sus datos, su curso y sus notas, sin poder modificarlos. |
 | Listado de alumnos | `GET /alumnos` | `alumnos/list.html` | Lista paginada (10 por página), ordenada por apellido y nombre. |
 | Ficha del alumno | `GET /alumnos/{id}` | `alumnos/detail.html` | Datos personales, domicilio, email y la tabla con las materias del curso y sus notas. |
 | Nuevo alumno | `GET /alumnos/nuevo` | `alumnos/form.html` | Formulario vacío. |
@@ -87,5 +99,7 @@ Cualquier página puede terminar en la **página de error** si se pide algo que 
 | Actualizar materia | `POST /materias/{id}` | redirige a `/materias` | Misma regla de nombre único. |
 | Eliminar materia | `POST /materias/{id}/eliminar` | redirige a `/materias` | No permite eliminar una materia asignada a un curso o con notas. |
 | Error | (cualquier ruta) | `error.html` | Página de error con el diseño del sitio. |
+
+Todas las rutas de gestión (alumnos, cursos, materias y notas) son solo para el administrador.
 
 Las rutas que modifican datos usan `POST` y nunca `GET`: un link o una recarga de página no deben poder borrar ni cambiar nada. Después de cada `POST` exitoso se redirige (patrón *Post/Redirect/Get*) para que al refrescar no se reenvíe el formulario.

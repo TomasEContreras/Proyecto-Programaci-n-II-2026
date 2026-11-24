@@ -59,6 +59,13 @@ public class AlumnoService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe el alumno con id " + id));
     }
 
+    // Alumno dueño de la cuenta con ese email (el email de la sesión iniciada)
+    @Transactional(readOnly = true)
+    public Alumno buscarPorEmail(String email) {
+        return alumnoRepository.findByUsuario_Email(email)
+                .orElseThrow(() -> new RecursoNoEncontradoException("La cuenta no tiene un alumno asociado."));
+    }
+
     @Transactional
     public Alumno crear(AlumnoForm form) {
         String dni = normalizar(form.getDni());

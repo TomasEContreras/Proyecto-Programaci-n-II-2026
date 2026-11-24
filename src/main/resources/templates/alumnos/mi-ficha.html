@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi ficha - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <!-- Vista del usuario final (ALUMNO): la misma ficha que ve el administrador, pero solo lectura -->
+    <main class="container">
+        <div th:replace="~{alumnos/ficha :: datos}"></div>
+        <div th:replace="~{alumnos/ficha :: notas(editable=false)}"></div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

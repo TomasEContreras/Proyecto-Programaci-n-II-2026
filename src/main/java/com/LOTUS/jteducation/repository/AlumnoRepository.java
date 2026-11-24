@@ -14,6 +14,9 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     // Query derivada: SELECT ... FROM alumno WHERE dni = ?
     Optional<Alumno> findByDni(String dni);
 
+    // "usuario.email": navega la relación 1:1 con Usuario. Lo usa "Mi ficha" para encontrar al alumno logueado
+    Optional<Alumno> findByUsuario_Email(String email);
+
     // "curso.idCurso": navega la relación y filtra por el id del curso
     List<Alumno> findByCurso_IdCurso(Long idCurso, Sort orden);
 }

@@ -5,12 +5,13 @@ Segundo parcial de Programación II (INSPT). La propuesta completa está en [Pro
 
 ## Documentación
 
-- [Mapa del sitio](docs/mapa-del-sitio.md): páginas, navegación y rutas.
-- [Diagrama Entidad-Relación](docs/DER.md): tablas, relaciones 1:1, 1:N y N:M, y reglas de negocio.
+- [Mapa del sitio](docs/Mapa%20del%20sitio.md): páginas, navegación y rutas.
+- [Casos de uso](docs/Casos%20de%20uso.md): diagrama UML, actores y permisos de cada rol.
+- Diagrama Entidad-Relación: [modelo conceptual](bbd/DER.drawio.png) y [modelo físico](bbd/EER.jpeg) de la base.
 
 ## Tecnologías
 
-- Java 21 y Spring Boot 4 (Spring MVC, Spring Data JPA, Bean Validation)
+- Java 21 y Spring Boot 4 (Spring MVC, Spring Data JPA, Spring Security, Bean Validation)
 - Thymeleaf como motor de plantillas
 - MySQL 8
 - Lombok
@@ -36,12 +37,22 @@ Segundo parcial de Programación II (INSPT). La propuesta completa está en [Pro
    ./mvnw spring-boot:run
    ```
 
-   y abrir <http://localhost:8080>.
+   y abrir <http://localhost:8080>. Sin sesión iniciada, la aplicación pide el login.
+
+## Usuarios y permisos
+
+| Rol | Qué puede hacer | Página al ingresar |
+|---|---|---|
+| **Administrador** | Gestionar alumnos, cursos y materias, y cargar notas. | Inicio (`/`) |
+| **Alumno** (usuario final) | Consultar su propia ficha: datos, curso, materias y notas. | Mi ficha (`/mi-ficha`) |
+
+Las contraseñas se guardan hasheadas con BCrypt. La sesión y los permisos los maneja Spring Security (`config/SeguridadConfig.java`). Si un alumno intenta entrar a la gestión, ve el error 403 "No tenés permiso".
 
 ## Estructura (MVC)
 
 ```
 src/main/java/com/LOTUS/jteducation/
+├── config/       Configuración de Spring Security (login, permisos por rol, BCrypt)
 ├── entity/       Modelo: entidades JPA con sus validaciones (Alumno, Curso, Materia, AlumnoMateria, ...)
 ├── repository/   Acceso a datos (Spring Data JPA)
 ├── service/      Reglas de negocio y transacciones
@@ -50,7 +61,7 @@ src/main/java/com/LOTUS/jteducation/
 ├── exception/    Excepciones propias y manejo centralizado de errores
 └── util/         Validaciones comunes
 src/main/resources/templates/   Vistas Thymeleaf
-bbd/                            Scripts SQL y diagramas originales
+bbd/                            Scripts SQL y diagramas de la base
 docs/                           Documentación
 ```
 
@@ -62,9 +73,9 @@ docs/                           Documentación
 | 2 | Backend Java con patrón MVC | Hecho | `entity/` + `templates/` + `controller/`, con `service/` y `repository/` |
 | 3 | CRUD completo con validaciones de al menos una entidad | Hecho | Alumno, Curso y Materia. Validaciones en los DTO (`dto/`), en las entidades y en los servicios |
 | 4 | Manejo de excepciones en operaciones críticas | Hecho | `exception/GlobalExceptionHandler`, `ReglaDeNegocioException`, `RecursoNoEncontradoException` |
-| 5 | Base relacional con relaciones 1:1, 1:N y N:M | Hecho | Ver [DER](docs/DER.md) |
-| 6 | Documentación: mapa del sitio y DER | Hecho | Carpeta [`docs/`](docs/) |
-| 7 | Interfaz funcional, moderna y responsive | En progreso | `static/css/style.css` |
-| 8 | Dos tipos de usuario (final y administrador) | Pendiente | Roles definidos en `entity/Rol` y en la tabla `usuario` |
-| 9 | Manejo de sesión y autenticación | Pendiente | |
-| 10 | Diagrama UML de casos de uso | Pendiente | |
+| 5 | Base relacional con relaciones 1:1, 1:N y N:M | Hecho | [`bbd/Escuela_DDL.sql`](bbd/Escuela_DDL.sql), [DER](bbd/DER.drawio.png) y [EER](bbd/EER.jpeg) |
+| 6 | Documentación: mapa del sitio y DER | Hecho | [Mapa del sitio](docs/Mapa%20del%20sitio.md) y diagramas en [`bbd/`](bbd/) |
+| 7 | Interfaz funcional, moderna y responsive | Hecho | `static/css/style.css`. Probado en celular (375 px): ninguna página se desborda |
+| 8 | Dos tipos de usuario (final y administrador) | Hecho | Roles `ADMIN` y `ALUMNO`; permisos en `config/SeguridadConfig.java`; `/mi-ficha` para el alumno |
+| 9 | Manejo de sesión y autenticación | Hecho | Spring Security: login propio, logout, BCrypt, CSRF y cambio de id de sesión al ingresar |
+| 10 | Diagrama UML de casos de uso | Hecho | [Casos de uso](docs/Casos%20de%20uso.md) |

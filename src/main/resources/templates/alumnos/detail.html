@@ -23,42 +23,9 @@
                 <button class="btn btn-peligro" type="submit">Eliminar alumno</button>
             </form>
         </div>
-        <h1 th:text="${alumno.apellido + ', ' + alumno.nombre}">Apellido, Nombre</h1>
-        <p class="subtitulo" th:text="${alumno.curso.anio + '° ' + alumno.curso.division + ' - Ciclo lectivo ' + alumno.curso.cicloLectivo}">4° A</p>
-
-        <section class="ficha">
-            <div><strong>DNI</strong><span th:text="${alumno.dni}">00000000</span></div>
-            <div><strong>Fecha de nacimiento</strong><span th:text="${#temporals.format(alumno.fechaNacimiento, 'dd/MM/yyyy')}">01/01/2010</span></div>
-            <div><strong>Fecha de inscripción</strong><span th:text="${#temporals.format(alumno.fechaInscripcion, 'dd/MM/yyyy')}">01/03/2026</span></div>
-            <div><strong>Domicilio</strong><span th:text="${alumno.domicilio.calle + ' ' + alumno.domicilio.altura + ', ' + alumno.domicilio.ciudad}">Calle 123, Ciudad</span></div>
-            <div><strong>Email</strong><span th:text="${alumno.usuario.email}">alumno@mail.com</span></div>
-        </section>
-
-        <h2>Materias y notas</h2>
-        <!-- Las materias salen del plan del curso: aparecen aunque todavía no tengan notas -->
-        <p th:if="${#lists.isEmpty(materias)}" class="vacio">El curso del alumno todavía no tiene materias asignadas.</p>
-
-        <div class="tabla-wrapper" th:if="${!#lists.isEmpty(materias)}">
-            <table>
-                <thead>
-                    <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th><th></th></tr>
-                </thead>
-                <tbody>
-                    <!-- "?." (navegación segura): si la materia no tiene notas, da null en vez de fallar, y "?:" muestra "-" -->
-                    <tr th:each="fila : ${materias}">
-                        <td th:text="${fila.materia.nombre}">Matemática</td>
-                        <td th:text="${fila.notas?.primerNota} ?: '-'">-</td>
-                        <td th:text="${fila.notas?.segundaNota} ?: '-'">-</td>
-                        <td th:text="${fila.notas?.notaFinal} ?: '-'">-</td>
-                        <td>
-                            <a class="btn"
-                               th:href="@{/alumnos/{idA}/notas/{idM}(idA=${alumno.idAlumno}, idM=${fila.materia.idMateria})}"
-                               th:text="${fila.notas != null} ? 'Editar notas' : 'Cargar notas'">Cargar notas</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- Datos y notas del alumno: fragmentos de alumnos/ficha.html (los comparte con "Mi ficha") -->
+        <div th:replace="~{alumnos/ficha :: datos}"></div>
+        <div th:replace="~{alumnos/ficha :: notas(editable=true)}"></div>
     </main>
 
     <footer th:replace="fragments/footer :: footer-main"></footer>

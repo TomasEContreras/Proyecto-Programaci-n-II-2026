@@ -9,6 +9,9 @@
             <li><a th:href="@{/materias}">Materias</a></li>
             <li><a th:href="@{/cursos}">Cursos</a></li>
         </ul>
+        <ul th:unless="${esAdmin}">
+            <li><a th:href="@{/mi-ficha}">Mi ficha</a></li>
+        </ul>
         <!-- Cerrar sesión es un POST (con token CSRF que agrega th:action), nunca un link GET -->
         <form class="sesion" method="post" th:action="@{/logout}">
             <span class="sesion-usuario" th:text="${emailUsuario}">usuario@mail.com</span>

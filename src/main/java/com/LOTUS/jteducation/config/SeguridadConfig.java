@@ -30,6 +30,8 @@ public class SeguridadConfig {
             .authorizeHttpRequests(permisos -> permisos
                 // Las reglas se evalúan en orden: de la más específica a la más general
                 .requestMatchers("/css/**", "/images/**", "/login", "/error").permitAll()
+                .requestMatchers("/mi-ficha").hasRole(Rol.ALUMNO.name())
+                .requestMatchers("/").authenticated() // El inicio redirige a cada uno a su página (IndexController)
                 // Toda la gestión (alumnos, cursos, materias y notas) es solo para el administrador.
                 // hasRole("ADMIN") busca el permiso "ROLE_ADMIN" que le da UsuarioDetailsService.
                 // Un ALUMNO logueado que intenta entrar recibe un error 403 (prohibido).
