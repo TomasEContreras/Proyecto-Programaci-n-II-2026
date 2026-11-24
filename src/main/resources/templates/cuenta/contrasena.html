@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar contraseña - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container login">
+        <h1>Cambiar contraseña</h1>
+        <p class="subtitulo" th:text="|Cuenta: ${emailUsuario}|">Cuenta: usuario@mail.com</p>
+
+        <form class="formulario" th:object="${cambioContrasenaForm}" method="post" th:action="@{/cambiar-contrasena}">
+
+            <!-- Errores del formulario completo (contraseña actual incorrecta, nuevas distintas) -->
+            <p class="error-campo" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+
+            <div class="campo">
+                <label for="actual">Contraseña actual</label>
+                <input type="password" id="actual" th:field="*{actual}" required autocomplete="current-password">
+                <p class="error-campo" th:if="${#fields.hasErrors('actual')}" th:errors="*{actual}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="nueva">Nueva contraseña</label>
+                <input type="password" id="nueva" th:field="*{nueva}" minlength="8" required autocomplete="new-password">
+                <p class="error-campo" th:if="${#fields.hasErrors('nueva')}" th:errors="*{nueva}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="confirmacion">Repetir nueva contraseña</label>
+                <input type="password" id="confirmacion" th:field="*{confirmacion}" minlength="8" required autocomplete="new-password">
+                <p class="error-campo" th:if="${#fields.hasErrors('confirmacion')}" th:errors="*{confirmacion}"></p>
+            </div>
+
+            <div class="acciones">
+                <button type="submit" class="btn">Guardar</button>
+                <a th:href="@{/}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

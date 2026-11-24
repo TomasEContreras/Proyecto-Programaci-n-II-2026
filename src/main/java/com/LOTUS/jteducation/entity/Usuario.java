@@ -36,7 +36,7 @@ public class Usuario {
 
     @Enumerated(EnumType.STRING) // Guarda "ADMIN"/"ALUMNO" y no un número
     @Column(nullable = false)
-    private Rol rol;
+    private Rol rol; // Sin setter a propósito: una cuenta no cambia de rol
 
     public Usuario(String email, String passwordHash, Rol rol) {
         this.email = validarEmail(email);
@@ -61,10 +61,6 @@ public class Usuario {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = validarPasswordHash(passwordHash);
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = validarRol(rol);
     }
 
     private static String validarEmail(String email) {

@@ -5,6 +5,7 @@ import com.LOTUS.jteducation.entity.Rol;
 import java.security.Principal;
 import java.time.Year;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,6 +40,14 @@ public class GlobalExceptionHandler {
     public ModelAndView manejarIntegridad(DataIntegrityViolationException e, Principal principal) {
         return crearVista(principal, HttpStatus.CONFLICT, "No se pudo completar la operación",
                 "Los datos entran en conflicto con información ya guardada.");
+    }
+
+    // Red de seguridad: alguien escribió a mano en la URL un orden por un campo que no existe
+    // (por ejemplo /alumnos?sort=noExiste). Sin esto, Spring Data responde con un error 500.
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ModelAndView manejarOrdenInvalido(PropertyReferenceException e, Principal principal) {
+        return crearVista(principal, HttpStatus.BAD_REQUEST, "Datos inválidos",
+                "El orden pedido no es válido.");
     }
 
     // No hay un @ExceptionHandler(Exception.class) a propósito: Spring Boot ya muestra templates/error.html

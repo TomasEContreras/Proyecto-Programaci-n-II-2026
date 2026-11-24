@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -42,8 +43,10 @@ public class AlumnoController {
 
     @GetMapping
     public String listar(Model model,
+            @RequestParam(name = "q", required = false) String busqueda,
             @PageableDefault(size = 10, sort = {"apellido", "nombre"}) Pageable pageable) {
-        model.addAttribute("paginaAlumnos", alumnoService.obtenerAlumnos(pageable));
+        model.addAttribute("paginaAlumnos", alumnoService.buscarAlumnos(busqueda, pageable));
+        model.addAttribute("busqueda", busqueda == null ? "" : busqueda.trim()); // Para el campo y los links de página
         return VISTA_LISTA;
     }
 
@@ -65,17 +68,21 @@ public class AlumnoController {
     @PostMapping
     public String crear(@Valid @ModelAttribute("alumnoForm") AlumnoForm form,
             BindingResult resultado, Model model, RedirectAttributes redirect) {
+        // Una única salida: "vista" arranca en el formulario y solo cambia si todo salió bien
+        String vista = VISTA_FORM;
         if (!resultado.hasErrors()) {
             try {
                 alumnoService.crear(form);
                 redirect.addFlashAttribute(MSJ_EXITO, "Alumno creado correctamente.");
-                return REDIRECT_LISTA;
+                vista = REDIRECT_LISTA;
             } catch (ReglaDeNegocioException | IllegalArgumentException e) {
                 resultado.reject("alumno.regla", e.getMessage());
             }
         }
-        cargarCursos(model);
-        return VISTA_FORM;
+        if (vista.equals(VISTA_FORM)) {
+            cargarCursos(model); // Se vuelve al formulario: hace falta la lista de cursos otra vez
+        }
+        return vista;
     }
 
     @GetMapping("/{id}/editar")
@@ -90,17 +97,20 @@ public class AlumnoController {
     public String actualizar(@PathVariable Long id, @Valid @ModelAttribute("alumnoForm") AlumnoForm form,
             BindingResult resultado, Model model, RedirectAttributes redirect) {
         model.addAttribute("idAlumno", id);
+        String vista = VISTA_FORM;
         if (!resultado.hasErrors()) {
             try {
                 alumnoService.actualizar(id, form);
                 redirect.addFlashAttribute(MSJ_EXITO, "Alumno actualizado correctamente.");
-                return REDIRECT_LISTA;
+                vista = REDIRECT_LISTA;
             } catch (ReglaDeNegocioException | IllegalArgumentException e) {
                 resultado.reject("alumno.regla", e.getMessage());
             }
         }
-        cargarCursos(model);
-        return VISTA_FORM;
+        if (vista.equals(VISTA_FORM)) {
+            cargarCursos(model);
+        }
+        return vista;
     }
 
     // Si el alumno ya no existe, solo se avisa (lo que se quería ya pasó); si tiene notas, es un error.

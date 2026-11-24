@@ -10,6 +10,8 @@
     <header th:replace="fragments/header :: header-nav"></header>
 
     <main class="container">
+        <!-- Mensaje flash: por ejemplo, después de cambiar la contraseña -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
         <h1>¡Bienvenido a JTEducation!</h1>
         <p class="subtitulo">Sistema de gestión académica para escuelas secundarias</p>
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administradores - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <h1>Administradores</h1>
+        <p class="subtitulo">
+            <span th:text="${#lists.size(administradores)}">0</span>
+            <span th:text="${#lists.size(administradores) == 1} ? 'administrador registrado' : 'administradores registrados'">administradores registrados</span>
+        </p>
+
+        <!-- Mensajes flash: llegan desde el controlador y se muestran una sola vez -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
+        <p th:if="${mensajeError}" class="mensaje error" th:text="${mensajeError}"></p>
+
+        <a class="btn" th:href="@{/administradores/nuevo}">Nuevo administrador</a>
+
+        <div class="tabla-wrapper">
+            <table>
+                <thead>
+                    <tr><th>Email</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="admin : ${administradores}">
+                        <td th:text="${admin.email}">admin@jteducation.com</td>
+                        <td class="acciones">
+                            <!-- La propia cuenta no se puede borrar: se muestra el aviso en lugar del botón -->
+                            <span th:if="${admin.email == emailUsuario}" class="vacio">Tu cuenta</span>
+                            <form th:unless="${admin.email == emailUsuario}" method="post"
+                                  th:action="@{/administradores/{id}/eliminar(id=${admin.id})}"
+                                  onsubmit="return confirm('¿Eliminar este administrador?');">
+                                <button type="submit" class="btn btn-peligro">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>

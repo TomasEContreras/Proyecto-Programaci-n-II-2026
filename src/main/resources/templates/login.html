@@ -16,6 +16,8 @@
         <!-- Spring Security redirige a /login?error si los datos no coinciden y a /login?salir al cerrar sesión -->
         <p th:if="${param.error}" class="mensaje error">Email o contraseña incorrectos.</p>
         <p th:if="${param.salir}" class="mensaje exito">Cerraste sesión correctamente.</p>
+        <!-- Se llega acá al enviar un formulario que había quedado abierto con una sesión ya cerrada (ver SeguridadConfig) -->
+        <p th:if="${param.expirada}" class="mensaje error">Tu sesión terminó. Iniciá sesión de nuevo para continuar.</p>
 
         <!-- El POST /login lo procesa Spring Security; th:action agrega el token CSRF oculto -->
         <form class="formulario" method="post" th:action="@{/login}">

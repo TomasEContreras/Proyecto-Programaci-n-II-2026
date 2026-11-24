@@ -11,6 +11,8 @@
 
     <!-- Vista del usuario final (ALUMNO): la misma ficha que ve el administrador, pero solo lectura -->
     <main class="container">
+        <!-- Mensaje flash: por ejemplo, después de cambiar la contraseña -->
+        <p th:if="${mensajeExito}" class="mensaje exito" th:text="${mensajeExito}"></p>
         <div th:replace="~{alumnos/ficha :: datos}"></div>
         <div th:replace="~{alumnos/ficha :: notas(editable=false)}"></div>
     </main>

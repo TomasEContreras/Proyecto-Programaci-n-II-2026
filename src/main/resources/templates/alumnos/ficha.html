@@ -29,12 +29,12 @@
                 <tr><th>Materia</th><th>1° nota</th><th>2° nota</th><th>Nota final</th><th th:if="${editable}"></th></tr>
             </thead>
             <tbody>
-                <!-- "?." (navegación segura): si la materia no tiene notas, da null en vez de fallar, y "?:" muestra "-" -->
+                <!-- Las notas vienen formateadas desde MateriaConNotas: "8", "7,5" o "-" si todavía no hay nota -->
                 <tr th:each="fila : ${materias}">
                     <td th:text="${fila.materia.nombre}">Matemática</td>
-                    <td th:text="${fila.notas?.primerNota} ?: '-'">-</td>
-                    <td th:text="${fila.notas?.segundaNota} ?: '-'">-</td>
-                    <td th:text="${fila.notas?.notaFinal} ?: '-'">-</td>
+                    <td th:text="${fila.primerNota()}">-</td>
+                    <td th:text="${fila.segundaNota()}">-</td>
+                    <td th:text="${fila.notaFinal()}">-</td>
                     <td th:if="${editable}">
                         <a class="btn"
                            th:href="@{/alumnos/{idA}/notas/{idM}(idA=${alumno.idAlumno}, idM=${fila.materia.idMateria})}"

@@ -8,14 +8,18 @@
             <li><a th:href="@{/alumnos}">Alumnos</a></li>
             <li><a th:href="@{/materias}">Materias</a></li>
             <li><a th:href="@{/cursos}">Cursos</a></li>
+            <li><a th:href="@{/administradores}">Administradores</a></li>
         </ul>
         <ul th:unless="${esAdmin}">
             <li><a th:href="@{/mi-ficha}">Mi ficha</a></li>
         </ul>
-        <!-- Cerrar sesión es un POST (con token CSRF que agrega th:action), nunca un link GET -->
-        <form class="sesion" method="post" th:action="@{/logout}">
+        <div class="sesion">
             <span class="sesion-usuario" th:text="${emailUsuario}">usuario@mail.com</span>
-            <button type="submit" class="btn btn-secundario">Cerrar sesión</button>
-        </form>
+            <a class="btn btn-secundario" th:href="@{/cambiar-contrasena}">Cambiar contraseña</a>
+            <!-- Cerrar sesión es un POST (con token CSRF que agrega th:action), nunca un link GET -->
+            <form method="post" th:action="@{/logout}">
+                <button type="submit" class="btn btn-secundario">Cerrar sesión</button>
+            </form>
+        </div>
     </nav>
 </header>

@@ -35,6 +35,7 @@ public class AlumnoMateria {
     @Column(name = "id_al_mat")
     private Long idAlMat;
 
+    // Alumno y materia sin setter a propósito: una fila de notas no cambia de alumno ni de materia
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "alumno_id_alumno", nullable = false)
     private Alumno alumno;
@@ -50,14 +51,6 @@ public class AlumnoMateria {
 
     public AlumnoMateria(Alumno alumno, Materia materia) {
         this.alumno = validarAlumno(alumno);
-        this.materia = validarMateria(materia);
-    }
-
-    public void setAlumno(Alumno alumno) {
-        this.alumno = validarAlumno(alumno);
-    }
-
-    public void setMateria(Materia materia) {
         this.materia = validarMateria(materia);
     }
 

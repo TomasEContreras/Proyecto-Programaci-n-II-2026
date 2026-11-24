@@ -37,16 +37,18 @@ public class AlumnoService {
     // Inyectado (ver SeguridadConfig): se depende de la interfaz y no se crea con new
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional(readOnly = true)
-    public List<Alumno> obtenerTodos() { return alumnoRepository.findAll(); }
-
+    // Los últimos inscriptos primero (el id más alto es el más reciente). Lo usa la página de inicio.
     @Transactional(readOnly = true)
     public Page<Alumno> obtenerAlumnos(int page, int size) {
-        return obtenerAlumnos(PageRequest.of(page, size, Sort.by("idAlumno").descending()));
+        return alumnoRepository.findAll(PageRequest.of(page, size, Sort.by("idAlumno").descending()));
     }
 
+    // Listado con buscador: sin texto devuelve todos; con texto, los que lo tengan en apellido, nombre o DNI
     @Transactional(readOnly = true)
-    public Page<Alumno> obtenerAlumnos(Pageable pageable) { return alumnoRepository.findAll(pageable); }
+    public Page<Alumno> buscarAlumnos(String texto, Pageable pageable) {
+        String limpio = normalizar(texto);
+        return limpio.isEmpty() ? alumnoRepository.findAll(pageable) : alumnoRepository.buscar(limpio, pageable);
+    }
 
     @Transactional(readOnly = true)
     public List<Alumno> obtenerPorCurso(Long idCurso) {

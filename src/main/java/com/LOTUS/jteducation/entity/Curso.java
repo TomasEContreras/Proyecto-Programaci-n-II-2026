@@ -33,6 +33,7 @@ public class Curso {
     private int anio;
     @Enumerated(EnumType.STRING)
     private Division division;
+    // Sin setter a propósito: el ciclo lectivo lo asigna el sistema al crear el curso y no cambia más
     private int cicloLectivo;
 
     // RELACIÓN N:M. El plan de materias del curso: los alumnos "heredan" estas materias.
@@ -58,10 +59,6 @@ public class Curso {
 
     public void setDivision(Division division) {
         this.division = validarDivision(division);
-    }
-
-    public void setCicloLectivo(int cicloLectivo) {
-        this.cicloLectivo = validarCicloLectivo(cicloLectivo);
     }
 
     // Se devuelve una vista de solo lectura: el plan se cambia únicamente con setMaterias

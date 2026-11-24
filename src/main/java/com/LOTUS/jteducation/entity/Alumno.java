@@ -32,11 +32,13 @@ public class Alumno {
     private LocalDate fechaInscripcion;   // -> fecha_inscripcion
 
     // RELACIÓN 1:1. cascade = ALL: al guardar/borrar el alumno, se guarda/borra su domicilio.
+    // Sin setter a propósito: el domicilio se edita (getDomicilio().setCalle(...)), nunca se reemplaza.
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "domicilio_id_domicilio", nullable = false)
     private Domicilio domicilio;
 
     // RELACIÓN 1:1. Sin cascade: el usuario se crea primero (con su rol y su contraseña hasheada).
+    // Sin setter a propósito: la cuenta del alumno es siempre la misma.
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id_usuario", nullable = false)
     private Usuario usuario;
@@ -78,14 +80,6 @@ public class Alumno {
 
     public void setFechaInscripcion(LocalDate fechaInscripcion) {
         this.fechaInscripcion = validarFechaInscripcion(fechaInscripcion);
-    }
-
-    public void setDomicilio(Domicilio domicilio) {
-        this.domicilio = validarDomicilio(domicilio);
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = validarUsuario(usuario);
     }
 
     public void setCurso(Curso curso) {

@@ -18,10 +18,22 @@
             <a class="btn" th:href="@{/alumnos/nuevo}">Nuevo alumno</a>
         </div>
         <p class="subtitulo">
-            <span th:text="${paginaAlumnos.totalElements}">0</span> alumnos registrados
+            <span th:text="${paginaAlumnos.totalElements}">0</span>
+            <span th:text="${busqueda.isEmpty()} ? 'alumnos registrados' : 'alumnos encontrados'">alumnos registrados</span>
         </p>
 
-        <p th:if="${paginaAlumnos.totalElements == 0}" class="vacio">Todavía no hay alumnos cargados.</p>
+        <!-- Buscador: formulario GET (solo consulta, no modifica nada), así la búsqueda queda en la URL -->
+        <form class="buscador" method="get" th:action="@{/alumnos}" role="search">
+            <label for="q" class="visualmente-oculto">Buscar alumno</label>
+            <input type="search" id="q" name="q" th:value="${busqueda}" maxlength="45"
+                   placeholder="Buscar por apellido, nombre o DNI">
+            <button type="submit" class="btn">Buscar</button>
+            <a th:if="${!busqueda.isEmpty()}" th:href="@{/alumnos}">Limpiar</a>
+        </form>
+
+        <p th:if="${paginaAlumnos.totalElements == 0 and busqueda.isEmpty()}" class="vacio">Todavía no hay alumnos cargados.</p>
+        <p th:if="${paginaAlumnos.totalElements == 0 and !busqueda.isEmpty()}" class="vacio"
+           th:text="|No se encontraron alumnos para &quot;${busqueda}&quot;.|">No se encontraron alumnos.</p>
 
         <!-- tabla-wrapper: en pantallas chicas la tabla se desliza horizontalmente en vez de romper el diseño -->
         <div class="tabla-wrapper" th:if="${paginaAlumnos.totalElements > 0}">
@@ -51,16 +63,16 @@
         <div th:if="${paginaAlumnos.totalPages > 1}" class="pagination-container">
             <ul>
                 <li th:class="${paginaAlumnos.first} ? 'disabled' : ''">
-                    <a th:href="@{/alumnos(page=${paginaAlumnos.number - 1}, size=${paginaAlumnos.size})}">Anterior</a>
+                    <a th:href="@{/alumnos(page=${paginaAlumnos.number - 1}, size=${paginaAlumnos.size}, q=${busqueda})}">Anterior</a>
                 </li>
 
                 <li th:each="i : ${#numbers.sequence(0, paginaAlumnos.totalPages - 1)}"
                     th:class="${i == paginaAlumnos.number} ? 'active' : ''">
-                    <a th:href="@{/alumnos(page=${i}, size=${paginaAlumnos.size})}" th:text="${i + 1}">1</a>
+                    <a th:href="@{/alumnos(page=${i}, size=${paginaAlumnos.size}, q=${busqueda})}" th:text="${i + 1}">1</a>
                 </li>
 
                 <li th:class="${paginaAlumnos.last} ? 'disabled' : ''">
-                    <a th:href="@{/alumnos(page=${paginaAlumnos.number + 1}, size=${paginaAlumnos.size})}">Siguiente</a>
+                    <a th:href="@{/alumnos(page=${paginaAlumnos.number + 1}, size=${paginaAlumnos.size}, q=${busqueda})}">Siguiente</a>
                 </li>
             </ul>
         </div>

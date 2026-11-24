@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo administrador - JTEducation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="fragments/header :: header-nav"></header>
+
+    <main class="container">
+        <a class="volver" th:href="@{/administradores}">&larr; Volver al listado</a>
+
+        <h1>Nuevo administrador</h1>
+        <p class="subtitulo">La nueva cuenta va a poder gestionar alumnos, cursos, materias, notas y otros administradores.</p>
+
+        <form class="formulario" th:object="${administradorForm}" method="post" th:action="@{/administradores}">
+
+            <!-- Errores del formulario completo (email repetido, contraseñas distintas) -->
+            <p class="error-campo" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+
+            <div class="campo">
+                <label for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}" maxlength="100" required autocomplete="off">
+                <p class="error-campo" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" th:field="*{password}" minlength="8" required autocomplete="new-password">
+                <p class="error-campo" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+            </div>
+
+            <div class="campo">
+                <label for="confirmacion">Repetir contraseña</label>
+                <input type="password" id="confirmacion" th:field="*{confirmacion}" minlength="8" required autocomplete="new-password">
+                <p class="error-campo" th:if="${#fields.hasErrors('confirmacion')}" th:errors="*{confirmacion}"></p>
+            </div>
+
+            <div class="acciones">
+                <button type="submit" class="btn">Guardar</button>
+                <a th:href="@{/administradores}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <footer th:replace="fragments/footer :: footer-main"></footer>
+</body>
+</html>
