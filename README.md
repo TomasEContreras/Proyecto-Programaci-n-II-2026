@@ -7,7 +7,7 @@ Segundo parcial de Programación II (INSPT). La propuesta completa está en [Pro
 
 - [Mapa del sitio](docs/Mapa%20del%20sitio.md): páginas, navegación y rutas.
 - [Casos de uso](docs/Casos%20de%20uso.md): diagrama UML, actores y permisos de cada rol.
-- Diagrama Entidad-Relación: [modelo conceptual](bbd/DER.drawio.png) y [modelo físico](bbd/EER.jpeg) de la base.
+- Diagrama Entidad-Relación: [modelo conceptual](bbd/DER.drawio.png) y [modelo físico](bbd/EER.svg) de la base.
 
 ## Tecnologías
 
@@ -43,10 +43,21 @@ Segundo parcial de Programación II (INSPT). La propuesta completa está en [Pro
 
 | Rol | Qué puede hacer | Página al ingresar |
 |---|---|---|
-| **Administrador** | Gestionar alumnos, cursos y materias, y cargar notas. | Inicio (`/`) |
+| **Administrador** | Gestionar alumnos, cursos y materias, cargar notas y crear o eliminar otros administradores. | Inicio (`/`) |
 | **Alumno** (usuario final) | Consultar su propia ficha: datos, curso, materias y notas. | Mi ficha (`/mi-ficha`) |
 
+Los dos roles pueden cambiar su propia contraseña desde el menú ("Cambiar contraseña").
+
 Las contraseñas se guardan hasheadas con BCrypt. La sesión y los permisos los maneja Spring Security (`config/SeguridadConfig.java`). Si un alumno intenta entrar a la gestión, ve el error 403 "No tenés permiso".
+
+## Tests
+
+```bash
+./mvnw test
+```
+
+- **Tests unitarios** (`src/test/java`): validaciones de las entidades, formato de las notas y reglas de los servicios (alumnos, administradores y cambio de contraseña). No necesitan la base de datos: los repositorios se reemplazan con Mockito.
+- `JteducationApplicationTests` levanta la aplicación completa, así que necesita la base de datos creada.
 
 ## Estructura (MVC)
 
@@ -73,7 +84,7 @@ docs/                           Documentación
 | 2 | Backend Java con patrón MVC | Hecho | `entity/` + `templates/` + `controller/`, con `service/` y `repository/` |
 | 3 | CRUD completo con validaciones de al menos una entidad | Hecho | Alumno, Curso y Materia. Validaciones en los DTO (`dto/`), en las entidades y en los servicios |
 | 4 | Manejo de excepciones en operaciones críticas | Hecho | `exception/GlobalExceptionHandler`, `ReglaDeNegocioException`, `RecursoNoEncontradoException` |
-| 5 | Base relacional con relaciones 1:1, 1:N y N:M | Hecho | [`bbd/Escuela_DDL.sql`](bbd/Escuela_DDL.sql), [DER](bbd/DER.drawio.png) y [EER](bbd/EER.jpeg) |
+| 5 | Base relacional con relaciones 1:1, 1:N y N:M | Hecho | [`bbd/Escuela_DDL.sql`](bbd/Escuela_DDL.sql), [DER](bbd/DER.drawio.png) y [EER](bbd/EER.svg) |
 | 6 | Documentación: mapa del sitio y DER | Hecho | [Mapa del sitio](docs/Mapa%20del%20sitio.md) y diagramas en [`bbd/`](bbd/) |
 | 7 | Interfaz funcional, moderna y responsive | Hecho | `static/css/style.css`. Probado en celular (375 px): ninguna página se desborda |
 | 8 | Dos tipos de usuario (final y administrador) | Hecho | Roles `ADMIN` y `ALUMNO`; permisos en `config/SeguridadConfig.java`; `/mi-ficha` para el alumno |

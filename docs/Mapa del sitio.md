@@ -1,6 +1,6 @@
 # Mapa del sitio
 
-Páginas de JTEducation y cómo se navega entre ellas. Sin sesión iniciada solo se puede ver el login. Con sesión, el menú superior está en todas las páginas: el **administrador** ve Inicio, Alumnos, Materias y Cursos; el **alumno** ve solo "Mi ficha". Los dos tienen el botón "Cerrar sesión".
+Páginas de JTEducation y cómo se navega entre ellas. Sin sesión iniciada solo se puede ver el login. Con sesión, el menú superior está en todas las páginas: el **administrador** ve Inicio, Alumnos, Materias, Cursos y Administradores; el **alumno** ve solo "Mi ficha". Los dos tienen los botones "Cambiar contraseña" y "Cerrar sesión".
 
 > Si cambian las páginas o las rutas, hay que actualizar este documento.
 
@@ -14,6 +14,7 @@ flowchart TD
     MENU(["Menú del administrador<br/>(en todas sus páginas)"])
     INICIO["Inicio<br/>/"]
     MI_FICHA["Mi ficha (alumno)<br/>/mi-ficha"]
+    CONTRASENA["Cambiar contraseña<br/>/cambiar-contrasena<br/>(los dos roles)"]
 
     subgraph Alumnos
         AL_LISTA["Listado de alumnos<br/>/alumnos"]
@@ -33,13 +34,20 @@ flowchart TD
         MA_FORM["Formulario de materia<br/>/materias/nueva<br/>/materias/{id}/editar"]
     end
 
+    subgraph Administradores
+        AD_LISTA["Listado de administradores<br/>/administradores"]
+        AD_FORM["Nuevo administrador<br/>/administradores/nuevo"]
+    end
+
     ERROR["Página de error<br/>(403, 404, 409, 400, 500)"]
 
     LOGIN -.->|"Ingresar como administrador (POST)"| INICIO
     LOGIN -.->|"Ingresar como alumno (POST)"| MI_FICHA
     INICIO & MI_FICHA -.->|"Cerrar sesión (POST)"| LOGIN
+    INICIO & MI_FICHA -->|"Cambiar contraseña"| CONTRASENA
+    CONTRASENA -.->|"Guardar (POST)"| INICIO & MI_FICHA
 
-    MENU --> INICIO & AL_LISTA & CU_LISTA & MA_LISTA
+    MENU --> INICIO & AL_LISTA & CU_LISTA & MA_LISTA & AD_LISTA
 
     INICIO -->|"últimos alumnos inscriptos"| AL_FICHA
     INICIO -->|"ver todos"| AL_LISTA
@@ -61,6 +69,10 @@ flowchart TD
     MA_LISTA -->|"Nueva materia / Editar"| MA_FORM
     MA_LISTA -.->|"Eliminar (POST)"| MA_LISTA
     MA_FORM -.->|"Guardar (POST)"| MA_LISTA
+
+    AD_LISTA -->|"Nuevo administrador"| AD_FORM
+    AD_LISTA -.->|"Eliminar (POST)"| AD_LISTA
+    AD_FORM -.->|"Guardar (POST)"| AD_LISTA
 ```
 
 Cualquier página puede terminar en la **página de error** si se pide algo que no existe (por ejemplo `/alumnos/999`, error 404), si una operación viola una regla que no se puede mostrar en un formulario (error 409) o si un alumno intenta entrar a una página de gestión (error 403, "No tenés permiso").
@@ -75,8 +87,10 @@ Los permisos de cada rol están detallados en [Casos de uso](Casos%20de%20uso.md
 | Ingresar | `POST /login` | redirige a `/` | Lo procesa Spring Security. Si los datos no coinciden, vuelve a `/login?error`. |
 | Cerrar sesión | `POST /logout` | redirige a `/login?salir` | Termina la sesión y borra la cookie. |
 | Inicio | `GET /` | `index.html` | Administrador: muestra los 6 últimos alumnos inscriptos. Alumno: lo redirige a `/mi-ficha`. |
+| Cambiar contraseña | `GET /cambiar-contrasena` | `cuenta/contrasena.html` | Los dos roles. Contraseña actual, nueva y repetir la nueva. |
+| Guardar contraseña | `POST /cambiar-contrasena` | redirige a `/` o `/mi-ficha` | La actual tiene que ser correcta; la nueva, de 8 caracteres o más, igual en los dos campos y distinta de la actual. |
 | Mi ficha | `GET /mi-ficha` | `alumnos/mi-ficha.html` | Solo alumnos. Sus datos, su curso y sus notas, sin poder modificarlos. |
-| Listado de alumnos | `GET /alumnos` | `alumnos/list.html` | Lista paginada (10 por página), ordenada por apellido y nombre. |
+| Listado de alumnos | `GET /alumnos` | `alumnos/list.html` | Lista paginada (10 por página), ordenada por apellido y nombre. Con `?q=texto` busca por apellido, nombre o DNI; la búsqueda se mantiene al cambiar de página. |
 | Ficha del alumno | `GET /alumnos/{id}` | `alumnos/detail.html` | Datos personales, domicilio, email y la tabla con las materias del curso y sus notas. |
 | Nuevo alumno | `GET /alumnos/nuevo` | `alumnos/form.html` | Formulario vacío. |
 | Crear alumno | `POST /alumnos` | redirige a `/alumnos` | Crea el usuario (contraseña con BCrypt), el domicilio y el alumno. |
@@ -98,8 +112,12 @@ Los permisos de cada rol están detallados en [Casos de uso](Casos%20de%20uso.md
 | Editar materia | `GET /materias/{id}/editar` | `materias/form.html` | Formulario con el nombre actual. |
 | Actualizar materia | `POST /materias/{id}` | redirige a `/materias` | Misma regla de nombre único. |
 | Eliminar materia | `POST /materias/{id}/eliminar` | redirige a `/materias` | No permite eliminar una materia asignada a un curso o con notas. |
+| Listado de administradores | `GET /administradores` | `administradores/list.html` | Cuentas con rol ADMIN, ordenadas por email. La propia cuenta aparece como "Tu cuenta", sin botón de eliminar. |
+| Nuevo administrador | `GET /administradores/nuevo` | `administradores/form.html` | Email, contraseña y repetir contraseña. |
+| Crear administrador | `POST /administradores` | redirige a `/administradores` | Contraseña de 8 caracteres o más, las dos iguales y email no usado por otra cuenta. Se guarda con BCrypt. |
+| Eliminar administrador | `POST /administradores/{id}/eliminar` | redirige a `/administradores` | No permite eliminar la propia cuenta ni cuentas de alumnos. |
 | Error | (cualquier ruta) | `error.html` | Página de error con el diseño del sitio. |
 
-Todas las rutas de gestión (alumnos, cursos, materias y notas) son solo para el administrador.
+Todas las rutas de gestión (alumnos, cursos, materias, notas y administradores) son solo para el administrador.
 
 Las rutas que modifican datos usan `POST` y nunca `GET`: un link o una recarga de página no deben poder borrar ni cambiar nada. Después de cada `POST` exitoso se redirige (patrón *Post/Redirect/Get*) para que al refrescar no se reenvíe el formulario.

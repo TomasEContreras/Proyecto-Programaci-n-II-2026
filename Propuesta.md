@@ -14,11 +14,12 @@ El proyecto representa de forma simple pero realista la organización de una esc
 
 **Incluye:**
 
-- Gestión de alumnos, con su domicilio y su cuenta de acceso.
+- Gestión de alumnos, con su domicilio y su cuenta de acceso, y búsqueda por apellido, nombre o DNI.
 - Gestión de materias.
-- Cursos organizados por año, división y ciclo lectivo.
-- Registro y consulta de las notas de cada alumno en cada materia.
-- Inicio de sesión con dos tipos de usuario, con permisos distintos.
+- Cursos organizados por año, división y ciclo lectivo, cada uno con su propio plan de materias.
+- Registro y consulta de las notas de cada alumno en las materias de su curso.
+- Inicio de sesión con dos tipos de usuario, con permisos distintos, y cambio de la propia contraseña.
+- Gestión de las cuentas de administrador.
 
 **No incluye** (podrían ser ampliaciones futuras): docentes, registro de asistencia y acceso para padres o tutores.
 
@@ -26,5 +27,5 @@ El proyecto representa de forma simple pero realista la organización de una esc
 
 | Rol | Qué puede hacer |
 |---|---|
-| **Administrador** | Gestionar alumnos y materias (alta, modificación, baja y consulta) y cargar notas. |
-| **Usuario final (alumno)** | Iniciar sesión y consultar su propia ficha: curso, materias y notas. |
+| **Administrador** | Gestionar alumnos, cursos y materias (alta, modificación, baja y consulta), definir el plan de materias de cada curso, cargar notas y crear o eliminar otros administradores. |
+| **Usuario final (alumno)** | Iniciar sesión, consultar su propia ficha (datos, curso, materias y notas) y cambiar su contraseña. |
